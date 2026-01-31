@@ -5,6 +5,7 @@ import Animated, {
   useAnimatedStyle,
   withSpring,
 } from "react-native-reanimated";
+import { safeHaptics } from "../../services/haptics";
 
 const AnimatedTouchable = Animated.createAnimatedComponent(TouchableOpacity);
 
@@ -40,6 +41,7 @@ export function Button({
   }));
 
   const handlePressIn = () => {
+    safeHaptics.light();
     scale.value = withSpring(0.96);
   };
 

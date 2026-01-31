@@ -7,6 +7,7 @@ import {
   TouchableOpacity,
   Image,
   Alert,
+  ActivityIndicator,
 } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 import { Ionicons } from "@expo/vector-icons";
@@ -192,13 +193,44 @@ export default function KitchenScreen() {
 
               {/* Actions */}
               <Animated.View entering={FadeInDown.delay(100)}>
-                <Button
-                  title={loading ? "Analizando..." : "Analizar Ingredientes"}
+                <TouchableOpacity
                   onPress={analyzeFridge}
-                  loading={loading}
-                  size="lg"
-                  className="mb-4"
-                />
+                  disabled={loading}
+                  activeOpacity={0.9}
+                  className="w-full mb-4"
+                >
+                  <LinearGradient
+                    colors={["#10B981", "#059669"]}
+                    start={{ x: 0, y: 0 }}
+                    end={{ x: 1, y: 1 }}
+                    className="py-4 px-6 rounded-3xl flex-row items-center justify-center shadow-lg shadow-emerald-500/30"
+                  >
+                    {loading ? (
+                      <View className="flex-row items-center gap-3">
+                        <ActivityIndicator color="#fff" />
+                        <Text className="text-white text-lg font-bold">
+                          Analizando...
+                        </Text>
+                      </View>
+                    ) : (
+                      <>
+                        <View className="bg-white/20 p-2 rounded-xl mr-3">
+                          <Ionicons name="sparkles" size={24} color="#fff" />
+                        </View>
+                        <View className="items-start">
+                          <Text className="text-white text-lg font-bold">
+                            Analizar Ingredientes
+                          </Text>
+                          <Text className="text-emerald-100 text-xs">
+                            IA Vision
+                          </Text>
+                        </View>
+                        <View className="flex-1" />
+                        <Ionicons name="scan-outline" size={24} color="#fff" />
+                      </>
+                    )}
+                  </LinearGradient>
+                </TouchableOpacity>
                 <TouchableOpacity
                   onPress={resetAnalysis}
                   className="flex-row items-center justify-center py-3"

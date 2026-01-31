@@ -7,6 +7,7 @@ import {
   TouchableOpacity,
   Modal,
   Vibration,
+  ActivityIndicator,
 } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 import { Ionicons } from "@expo/vector-icons";
@@ -454,14 +455,48 @@ export default function GymScreen() {
                     <Text className="text-white/70 text-center mt-2 mb-6">
                       La IA creará una rutina basada en tu perfil
                     </Text>
-                    <Button
-                      title={loading ? "Generando..." : "Generar Rutina"}
+                    <TouchableOpacity
                       onPress={generateRoutine}
-                      loading={loading}
-                      variant="secondary"
-                      className="bg-primary-500 border-primary-500 rounded-full"
-                      size="lg"
-                    />
+                      disabled={loading}
+                      activeOpacity={0.9}
+                      className="w-full"
+                    >
+                      <LinearGradient
+                        colors={["#6366F1", "#4F46E5"]}
+                        start={{ x: 0, y: 0 }}
+                        end={{ x: 1, y: 1 }}
+                        className="py-4 px-6 rounded-3xl flex-row items-center justify-center shadow-lg shadow-indigo-500/30"
+                      >
+                        {loading ? (
+                          <View className="flex-row items-center gap-3">
+                            <ActivityIndicator color="#fff" />
+                            <Text className="text-white text-lg font-bold">
+                              Diseñando tu plan...
+                            </Text>
+                          </View>
+                        ) : (
+                          <>
+                            <View className="bg-white/20 p-2 rounded-xl mr-3">
+                              <Ionicons name="flash" size={24} color="#fff" />
+                            </View>
+                            <View className="items-start">
+                              <Text className="text-white text-lg font-bold">
+                                Generar Rutina
+                              </Text>
+                              <Text className="text-indigo-200 text-xs">
+                                Potenciada por IA
+                              </Text>
+                            </View>
+                            <View className="flex-1" />
+                            <Ionicons
+                              name="arrow-forward"
+                              size={24}
+                              color="#fff"
+                            />
+                          </>
+                        )}
+                      </LinearGradient>
+                    </TouchableOpacity>
                   </View>
                 </LinearGradient>
               </Animated.View>
