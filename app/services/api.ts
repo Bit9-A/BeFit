@@ -1,7 +1,6 @@
 // Get the correct API URL - use your computer's local IP for device testing
 // For emulator/simulator, localhost works. For physical device, use your computer's IP
-const API_URL =
-  process.env.EXPO_PUBLIC_API_URL || "http://192.168.1.100:3000/api";
+const API_URL = process.env.EXPO_PUBLIC_API_URL || "http://[IP_ADDRESS]/api";
 
 interface ApiResponse<T> {
   data?: T;
