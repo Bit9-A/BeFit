@@ -43,15 +43,17 @@ export function Skeleton({
   return (
     <Animated.View
       className={`bg-slate-700 ${className}`}
-      style={[
-        {
-          width: width,
-          height: height,
-          borderRadius: borderRadius,
-        },
-        animatedStyle,
-        style,
-      ]}
+      style={
+        [
+          {
+            width: width,
+            height: height,
+            borderRadius: borderRadius,
+          },
+          animatedStyle,
+          style,
+        ] as any
+      }
     />
   );
 }

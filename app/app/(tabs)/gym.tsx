@@ -21,10 +21,12 @@ import Animated, {
   withRepeat,
   withSequence,
 } from "react-native-reanimated";
-import { Button, Card } from "../../components/ui";
+import { Button, Card, Skeleton } from "../../components/ui";
+import { FocusTimer } from "../../components/gym/FocusTimer";
 import { api } from "../../services/api";
 import { useAuthStore } from "../../stores/authStore";
 import { useUserStore } from "../../stores/userStore";
+import { useGamificationStore } from "../../stores/gamificationStore";
 import { Exercise } from "../../types";
 
 // Rest Timer Modal Component
@@ -124,145 +126,6 @@ function RestTimerModal({
               className="flex-1 bg-primary-500 py-3 rounded-xl items-center"
             >
               <Text className="text-white font-semibold">Saltar</Text>
-            </TouchableOpacity>
-          </View>
-        </LinearGradient>
-      </View>
-    </Modal>
-  );
-}
-
-// Exercise Timer Modal
-function ExerciseTimerModal({
-  visible,
-  exercise,
-  currentSet,
-  totalSets,
-  onComplete,
-  onRest,
-}: {
-  visible: boolean;
-  exercise: Exercise | null;
-  currentSet: number;
-  totalSets: number;
-  onComplete: () => void;
-  onRest: () => void;
-}) {
-  const [isRunning, setIsRunning] = useState(false);
-  const [elapsed, setElapsed] = useState(0);
-
-  useEffect(() => {
-    if (visible) {
-      setElapsed(0);
-      setIsRunning(false);
-    }
-  }, [visible, currentSet]);
-
-  useEffect(() => {
-    if (!isRunning) return;
-
-    const interval = setInterval(() => {
-      setElapsed((prev) => prev + 1);
-    }, 1000);
-
-    return () => clearInterval(interval);
-  }, [isRunning]);
-
-  const formatTime = (secs: number) => {
-    const mins = Math.floor(secs / 60);
-    const remaining = secs % 60;
-    return `${mins}:${remaining.toString().padStart(2, "0")}`;
-  };
-
-  if (!exercise) return null;
-
-  const isLastSet = currentSet >= totalSets;
-
-  return (
-    <Modal visible={visible} transparent animationType="slide">
-      <View className="flex-1 bg-black/90">
-        <LinearGradient colors={["#0F172A", "#1E293B"]} className="flex-1 p-6">
-          {/* Header */}
-          <View className="flex-row items-center justify-between mt-10 mb-8">
-            <TouchableOpacity onPress={onComplete}>
-              <Ionicons name="close" size={28} color="#94A3B8" />
-            </TouchableOpacity>
-            <View className="bg-primary-500/20 px-4 py-2 rounded-full">
-              <Text className="text-primary-400 font-semibold">
-                Serie {currentSet} de {totalSets}
-              </Text>
-            </View>
-            <View className="w-7" />
-          </View>
-
-          {/* Exercise Info */}
-          <View className="items-center flex-1 justify-center">
-            <View className="w-24 h-24 bg-primary-500/20 rounded-3xl items-center justify-center mb-6">
-              <Ionicons name="barbell" size={48} color="#6366F1" />
-            </View>
-
-            <Text className="text-white text-2xl font-bold text-center mb-2">
-              {exercise.name}
-            </Text>
-
-            <Text className="text-accent-500 text-4xl font-bold mb-4">
-              {exercise.reps} reps
-            </Text>
-
-            {/* Timer Display */}
-            <View className="bg-surface rounded-2xl px-8 py-4 mb-8">
-              <Text className="text-white text-5xl font-mono font-bold">
-                {formatTime(elapsed)}
-              </Text>
-            </View>
-
-            {/* Tips */}
-            {exercise.tips && (
-              <View className="bg-accent-500/10 rounded-xl p-4 mx-4 mb-8">
-                <Text className="text-accent-400 text-center">
-                  💡 {exercise.tips}
-                </Text>
-              </View>
-            )}
-          </View>
-
-          {/* Controls */}
-          <View className="gap-3 mb-8">
-            {!isRunning ? (
-              <TouchableOpacity
-                onPress={() => setIsRunning(true)}
-                className="bg-accent-500 py-4 rounded-2xl flex-row items-center justify-center"
-              >
-                <Ionicons name="play" size={24} color="#fff" />
-                <Text className="text-white text-lg font-bold ml-2">
-                  Iniciar Serie
-                </Text>
-              </TouchableOpacity>
-            ) : (
-              <TouchableOpacity
-                onPress={() => {
-                  setIsRunning(false);
-                  Vibration.vibrate(100);
-                  if (isLastSet) {
-                    onComplete();
-                  } else {
-                    onRest();
-                  }
-                }}
-                className="bg-primary-500 py-4 rounded-2xl flex-row items-center justify-center"
-              >
-                <Ionicons name="checkmark-circle" size={24} color="#fff" />
-                <Text className="text-white text-lg font-bold ml-2">
-                  {isLastSet ? "Completar Ejercicio" : "Siguiente Serie"}
-                </Text>
-              </TouchableOpacity>
-            )}
-
-            <TouchableOpacity
-              onPress={onComplete}
-              className="py-3 items-center"
-            >
-              <Text className="text-slate-400">Saltar ejercicio</Text>
             </TouchableOpacity>
           </View>
         </LinearGradient>
@@ -373,6 +236,12 @@ export default function GymScreen() {
       if (response.data) {
         setRoutine(response.data);
         setCompletedExercises(new Set());
+        // Award XP for generating routine
+        if (user?.id) {
+          useGamificationStore
+            .getState()
+            .addXP(user.id, 50, "routine_generated");
+        }
       } else if (response.error) {
         console.error("[Gym] Error:", response.error);
       }
@@ -423,7 +292,7 @@ export default function GymScreen() {
   const currentExercise = routine?.exercises[currentExerciseIndex] || null;
 
   return (
-    <LinearGradient colors={["#0F172A", "#1E293B"]} className="flex-1">
+    <LinearGradient colors={["#09090b", "#18181b"]} className="flex-1">
       <SafeAreaView className="flex-1">
         <ScrollView
           className="flex-1 px-5"
@@ -462,10 +331,10 @@ export default function GymScreen() {
                       className="w-full"
                     >
                       <LinearGradient
-                        colors={["#6366F1", "#4F46E5"]}
+                        colors={["#22D3EE", "#3B82F6"]}
                         start={{ x: 0, y: 0 }}
                         end={{ x: 1, y: 1 }}
-                        className="py-4 px-6 rounded-3xl flex-row items-center justify-center shadow-lg shadow-indigo-500/30"
+                        className="py-4 px-6 rounded-3xl flex-row items-center justify-center shadow-neon-cyan"
                       >
                         {loading ? (
                           <View className="flex-row items-center gap-3">
@@ -497,6 +366,26 @@ export default function GymScreen() {
                         )}
                       </LinearGradient>
                     </TouchableOpacity>
+
+                    {/* Loading Skeletons */}
+                    {loading && (
+                      <Animated.View
+                        entering={FadeInDown.delay(200)}
+                        className="mt-6 w-full"
+                      >
+                        <Skeleton height={20} width="60%" className="mb-3" />
+                        <Skeleton height={20} width="80%" className="mb-3" />
+                        <Skeleton height={20} width="40%" className="mb-6" />
+
+                        <View className="flex-row gap-3">
+                          <Skeleton height={80} width={80} borderRadius={16} />
+                          <View className="flex-1 gap-2">
+                            <Skeleton height={20} width="100%" />
+                            <Skeleton height={20} width="70%" />
+                          </View>
+                        </View>
+                      </Animated.View>
+                    )}
                   </View>
                 </LinearGradient>
               </Animated.View>
@@ -625,14 +514,15 @@ export default function GymScreen() {
           )}
         </ScrollView>
 
-        {/* Exercise Timer Modal */}
-        <ExerciseTimerModal
+        {/* Focus Timer (Zen Mode) */}
+        <FocusTimer
           visible={showExerciseTimer}
           exercise={currentExercise}
           currentSet={currentSet}
           totalSets={parseInt(currentExercise?.sets || "3")}
           onComplete={handleExerciseSkip}
           onRest={handleSetComplete}
+          onClose={() => setShowExerciseTimer(false)}
         />
 
         {/* Rest Timer Modal */}

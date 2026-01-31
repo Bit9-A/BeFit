@@ -205,6 +205,34 @@ class ApiService {
 
     return response as any;
   }
+
+  // Gamification
+  async addXP(params: { userId: string; amount: number; action: string }) {
+    return this.request<{
+      success: boolean;
+      xp: number;
+      level: number;
+      current_streak: number;
+      leveledUp: boolean;
+      xpAdded: number;
+    }>("/gamification/xp", {
+      method: "POST",
+      body: JSON.stringify(params),
+    });
+  }
+
+  async getGamificationProfile(userId: string) {
+    return this.request<{
+      xp: number;
+      level: number;
+      current_streak: number;
+      full_name: string;
+      nextLevelXp: number;
+      progressPercent: number;
+    }>(`/gamification/profile/${userId}`, {
+      method: "GET",
+    });
+  }
 }
 
 export const api = new ApiService();

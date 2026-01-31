@@ -15,6 +15,12 @@ import { Card } from "../../components/ui";
 import { useAuthStore } from "../../stores/authStore";
 import { useUserStore } from "../../stores/userStore";
 import { supabase } from "../../services/supabase";
+import { XPBar } from "../../components/gamification/XPBar";
+import { StreakBadge } from "../../components/gamification/StreakBadge";
+import { DailyMissions } from "../../components/gamification/DailyMissions";
+import { useGamificationStore } from "../../stores/gamificationStore";
+
+import { triggerHaptic } from "../../services/haptics";
 
 interface QuickActionProps {
   icon: keyof typeof Ionicons.glyphMap;
@@ -33,7 +39,10 @@ function QuickAction({
 }: QuickActionProps) {
   return (
     <TouchableOpacity
-      onPress={onPress}
+      onPress={() => {
+        triggerHaptic("medium");
+        onPress();
+      }}
       className="items-center flex-1"
       activeOpacity={0.7}
     >
@@ -82,6 +91,7 @@ export default function DashboardScreen() {
   const fetchLatestData = async () => {
     if (user?.id) {
       await fetchProfile(user.id);
+      await useGamificationStore.getState().fetchGamification(user.id);
 
       // Fetch latest weight
       const { data } = await supabase
@@ -116,19 +126,6 @@ export default function DashboardScreen() {
     setRefreshing(false);
   };
 
-  const getGoalText = (goal?: string) => {
-    switch (goal) {
-      case "muscle_gain":
-        return "Ganar Músculo 💪";
-      case "weight_loss":
-        return "Perder Peso 🔥";
-      case "maintenance":
-        return "Mantenerme Sano ❤️";
-      default:
-        return "Sin definir";
-    }
-  };
-
   const greeting = () => {
     const hour = new Date().getHours();
     if (hour < 12) return "Buenos días";
@@ -157,9 +154,12 @@ export default function DashboardScreen() {
           >
             <View>
               <Text className="text-slate-400 text-base">{greeting()}</Text>
-              <Text className="text-white text-2xl font-bold mt-1">
-                {profile?.full_name?.split(" ")[0] || "Usuario"}
-              </Text>
+              <View className="flex-row items-center mt-1">
+                <Text className="text-white text-2xl font-bold mr-2">
+                  {profile?.full_name?.split(" ")[0] || "Usuario"}
+                </Text>
+                <StreakBadge />
+              </View>
             </View>
             <TouchableOpacity
               onPress={() => router.push("/profile")}
@@ -171,32 +171,13 @@ export default function DashboardScreen() {
             </TouchableOpacity>
           </Animated.View>
 
-          {/* Goal Card */}
-          <Animated.View entering={FadeInDown.delay(150)}>
-            <LinearGradient
-              colors={["#6366F1", "#8B5CF6"]}
-              start={{ x: 0, y: 0 }}
-              end={{ x: 1, y: 1 }}
-              className="rounded-3xl p-5 mb-6"
-            >
-              <View className="flex-row items-center justify-between">
-                <View className="flex-1">
-                  <Text className="text-white/80 text-sm">Tu Objetivo</Text>
-                  <Text className="text-white text-xl font-bold mt-1">
-                    {getGoalText(profile?.goal)}
-                  </Text>
-                  <Text className="text-white/70 text-sm mt-2">
-                    {metrics?.explanation?.slice(0, 80) ||
-                      "Completa tu perfil para ver recomendaciones"}
-                    ...
-                  </Text>
-                </View>
-                <View className="w-16 h-16 bg-white/20 rounded-2xl items-center justify-center">
-                  <Ionicons name="trophy" size={32} color="#fff" />
-                </View>
-              </View>
-            </LinearGradient>
+          {/* Gamification Bar */}
+          <Animated.View entering={FadeInDown.delay(120)}>
+            <XPBar />
           </Animated.View>
+
+          {/* Daily Missions Widget (Replaces Goal Card) */}
+          <DailyMissions />
 
           {/* Metrics Grid */}
           <Animated.View

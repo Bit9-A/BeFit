@@ -141,6 +141,22 @@ router.post(
     res.json({ success: true });
   }),
 );
+// =====================
+// GAMIFICATION ROUTES
+// =====================
+const gamificationController = require("../controllers/gamificationController");
+
+router.post(
+  "/gamification/xp",
+  optionalAuth,
+  asyncHandler(gamificationController.addXP),
+);
+
+router.get(
+  "/gamification/profile/:userId",
+  optionalAuth,
+  asyncHandler(gamificationController.getGamificationProfile),
+);
 
 // =====================
 // MULTER ERROR HANDLER

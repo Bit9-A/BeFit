@@ -12,6 +12,7 @@ import {
 import { LinearGradient } from "expo-linear-gradient";
 import { Ionicons } from "@expo/vector-icons";
 import Animated, { FadeInDown, FadeInUp } from "react-native-reanimated";
+import { LineChart } from "react-native-gifted-charts";
 import { Button, Input, Card } from "../../components/ui";
 import { useAuthStore } from "../../stores/authStore";
 import { useUserStore } from "../../stores/userStore";
@@ -199,7 +200,7 @@ export default function ProfileScreen() {
   };
 
   return (
-    <LinearGradient colors={["#0F172A", "#1E293B"]} className="flex-1">
+    <LinearGradient colors={["#09090b", "#18181b"]} className="flex-1">
       <SafeAreaView className="flex-1">
         <ScrollView
           className="flex-1 px-5"
@@ -216,7 +217,7 @@ export default function ProfileScreen() {
           {/* Profile Card */}
           <Animated.View entering={FadeInDown.delay(150)}>
             <LinearGradient
-              colors={["#6366F1", "#8B5CF6"]}
+              colors={["#A855F7", "#7E22CE"]}
               className="rounded-3xl p-6 mb-6 items-center"
             >
               <View className="w-20 h-20 bg-white/20 rounded-full items-center justify-center mb-3">
@@ -313,21 +314,51 @@ export default function ProfileScreen() {
                   No hay registros de peso
                 </Text>
               ) : (
-                weights.map((w, i) => (
-                  <View
-                    key={i}
-                    className={`flex-row justify-between py-3 ${
-                      i < weights.length - 1
-                        ? "border-b border-surface-light"
-                        : ""
-                    }`}
-                  >
-                    <Text className="text-slate-400">{w.date}</Text>
-                    <Text className="text-white font-semibold">
-                      {w.weight} kg
-                    </Text>
-                  </View>
-                ))
+                <>
+                  {/* Chart */}
+                  {weights.length > 1 && (
+                    <View className="mb-6 -ml-4">
+                      <LineChart
+                        data={weights
+                          .slice()
+                          .reverse()
+                          .map((w) => ({ value: w.weight, label: w.date }))}
+                        color="#A855F7"
+                        thickness={3}
+                        dataPointsColor="#C084FC"
+                        textColor="gray"
+                        yAxisTextStyle={{ color: "gray" }}
+                        xAxisLabelTextStyle={{ color: "gray", fontSize: 10 }}
+                        hideRules
+                        hideAxesAndRules
+                        curved
+                        adjustToWidth
+                        width={300}
+                        height={180}
+                        initialSpacing={20}
+                        spacing={60}
+                        isAnimated
+                      />
+                    </View>
+                  )}
+
+                  {/* List */}
+                  {weights.slice(0, 5).map((w, i) => (
+                    <View
+                      key={i}
+                      className={`flex-row justify-between py-3 ${
+                        i < Math.min(weights.length, 5) - 1
+                          ? "border-b border-surface-light"
+                          : ""
+                      }`}
+                    >
+                      <Text className="text-slate-400">{w.date}</Text>
+                      <Text className="text-white font-semibold">
+                        {w.weight} kg
+                      </Text>
+                    </View>
+                  ))}
+                </>
               )}
             </Card>
           </Animated.View>

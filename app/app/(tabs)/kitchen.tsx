@@ -17,9 +17,10 @@ import Animated, {
   FadeInUp,
   FadeIn,
 } from "react-native-reanimated";
-import { Button, Card } from "../../components/ui";
+import { Button, Card, Skeleton } from "../../components/ui";
 import { api } from "../../services/api";
 import { useAuthStore } from "../../stores/authStore";
+import { useGamificationStore } from "../../stores/gamificationStore";
 import { FridgeAnalysis } from "../../types";
 
 export default function KitchenScreen() {
@@ -72,6 +73,10 @@ export default function KitchenScreen() {
 
     if (response.data) {
       setAnalysis(response.data as FridgeAnalysis);
+      // Award XP for analysis
+      if (user?.id) {
+        useGamificationStore.getState().addXP(user.id, 30, "fridge_analysis");
+      }
     } else {
       Alert.alert("Error", response.error || "No se pudo analizar la imagen");
     }
@@ -85,7 +90,7 @@ export default function KitchenScreen() {
   };
 
   return (
-    <LinearGradient colors={["#0F172A", "#1E293B"]} className="flex-1">
+    <LinearGradient colors={["#09090b", "#18181b"]} className="flex-1">
       <SafeAreaView className="flex-1">
         <ScrollView
           className="flex-1 px-5"
@@ -106,7 +111,7 @@ export default function KitchenScreen() {
               {/* Camera Card */}
               <Animated.View entering={FadeInDown.delay(200)}>
                 <LinearGradient
-                  colors={["#10B981", "#059669"]}
+                  colors={["#0891B2", "#22D3EE"]}
                   className="rounded-3xl p-6 mb-6"
                 >
                   <View className="items-center">
@@ -200,10 +205,10 @@ export default function KitchenScreen() {
                   className="w-full mb-4"
                 >
                   <LinearGradient
-                    colors={["#10B981", "#059669"]}
+                    colors={["#22D3EE", "#06B6D4"]}
                     start={{ x: 0, y: 0 }}
                     end={{ x: 1, y: 1 }}
-                    className="py-4 px-6 rounded-3xl flex-row items-center justify-center shadow-lg shadow-emerald-500/30"
+                    className="py-4 px-6 rounded-3xl flex-row items-center justify-center shadow-neon-cyan"
                   >
                     {loading ? (
                       <View className="flex-row items-center gap-3">
@@ -231,6 +236,27 @@ export default function KitchenScreen() {
                     )}
                   </LinearGradient>
                 </TouchableOpacity>
+
+                {/* Loading Skeletons */}
+                {loading && (
+                  <Animated.View entering={FadeInDown} className="w-full mt-2">
+                    <Card className="mb-4">
+                      <View className="flex-row gap-2 mb-4">
+                        <Skeleton width={80} height={20} borderRadius={20} />
+                        <Skeleton width={60} height={20} borderRadius={20} />
+                        <Skeleton width={90} height={20} borderRadius={20} />
+                      </View>
+                      <Skeleton width="100%" height={200} borderRadius={16} />
+                    </Card>
+                    <Card>
+                      <Skeleton width="60%" height={24} className="mb-4" />
+                      <Skeleton width="100%" height={16} className="mb-2" />
+                      <Skeleton width="100%" height={16} className="mb-2" />
+                      <Skeleton width="80%" height={16} />
+                    </Card>
+                  </Animated.View>
+                )}
+
                 <TouchableOpacity
                   onPress={resetAnalysis}
                   className="flex-row items-center justify-center py-3"

@@ -5,7 +5,7 @@ import Animated, {
   useAnimatedStyle,
   withSpring,
 } from "react-native-reanimated";
-import { safeHaptics } from "../../services/haptics";
+import { triggerHaptic } from "../../services/haptics";
 
 const AnimatedTouchable = Animated.createAnimatedComponent(TouchableOpacity);
 
@@ -41,7 +41,7 @@ export function Button({
   }));
 
   const handlePressIn = () => {
-    safeHaptics.light();
+    triggerHaptic("light");
     scale.value = withSpring(0.96);
   };
 
@@ -49,7 +49,8 @@ export function Button({
     scale.value = withSpring(1);
   };
 
-  const baseClasses = "flex-row items-center justify-center rounded-2xl";
+  const baseClasses =
+    "flex-row items-center justify-center rounded-3xl overflow-hidden";
 
   const sizeClasses = {
     sm: "px-4 py-2",

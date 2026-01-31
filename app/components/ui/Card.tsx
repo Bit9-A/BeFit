@@ -22,7 +22,7 @@ export function Card({
         colors={gradientColors as [string, string, ...string[]]}
         start={{ x: 0, y: 0 }}
         end={{ x: 1, y: 1 }}
-        className={`rounded-3xl p-5 ${className}`}
+        className={`rounded-3xl overflow-hidden p-5 ${className}`}
         {...props}
       >
         {children}
@@ -37,7 +37,7 @@ export function Card({
 
   return (
     <View
-      className={`rounded-3xl p-5 border border-surface-light ${variantClasses[variant]} ${className}`}
+      className={`rounded-3xl overflow-hidden p-5 border-[0.5px] border-white/10 ${variantClasses[variant]} ${className}`}
       {...props}
     >
       {children}

@@ -1,73 +1,45 @@
 import * as Haptics from "expo-haptics";
 import { Platform } from "react-native";
 
+// Web-safe haptics wrapper
+const isWeb = Platform.OS === "web";
+
 /**
- * A web-safe wrapper for Expo Haptics.
- * On web, these functions do nothing to prevent errors.
- * On native, they trigger the device haptic engine.
+ * Triggers haptic feedback safely across platforms.
+ * On web, this function does nothing to prevent errors.
  */
+export const triggerHaptic = async (
+  type: "light" | "medium" | "heavy" | "success" | "warning" | "error",
+) => {
+  if (isWeb) return;
 
-export const safeHaptics = {
-  selection: async () => {
-    if (Platform.OS === "web") return;
-    try {
-      await Haptics.selectionAsync();
-    } catch (e) {
-      // Ignore haptics errors
+  try {
+    switch (type) {
+      case "light":
+        await Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+        break;
+      case "medium":
+        await Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+        break;
+      case "heavy":
+        await Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Heavy);
+        break;
+      case "success":
+        await Haptics.notificationAsync(
+          Haptics.NotificationFeedbackType.Success,
+        );
+        break;
+      case "warning":
+        await Haptics.notificationAsync(
+          Haptics.NotificationFeedbackType.Warning,
+        );
+        break;
+      case "error":
+        await Haptics.notificationAsync(Haptics.NotificationFeedbackType.Error);
+        break;
     }
-  },
-
-  success: async () => {
-    if (Platform.OS === "web") return;
-    try {
-      await Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
-    } catch (e) {
-      // Ignore
-    }
-  },
-
-  error: async () => {
-    if (Platform.OS === "web") return;
-    try {
-      await Haptics.notificationAsync(Haptics.NotificationFeedbackType.Error);
-    } catch (e) {
-      // Ignore
-    }
-  },
-
-  warning: async () => {
-    if (Platform.OS === "web") return;
-    try {
-      await Haptics.notificationAsync(Haptics.NotificationFeedbackType.Warning);
-    } catch (e) {
-      // Ignore
-    }
-  },
-
-  light: async () => {
-    if (Platform.OS === "web") return;
-    try {
-      await Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-    } catch (e) {
-      // Ignore
-    }
-  },
-
-  medium: async () => {
-    if (Platform.OS === "web") return;
-    try {
-      await Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
-    } catch (e) {
-      // Ignore
-    }
-  },
-
-  heavy: async () => {
-    if (Platform.OS === "web") return;
-    try {
-      await Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Heavy);
-    } catch (e) {
-      // Ignore
-    }
-  },
+  } catch (error) {
+    // Haptics might fail on some devices or simulators, we catch safely
+    console.debug("[Haptics] Failed or not supported", error);
+  }
 };
