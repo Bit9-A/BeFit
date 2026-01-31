@@ -1,0 +1,40 @@
+# ===========================================
+# RENDER BLUEPRINT - BeFit Backend
+# ===========================================
+# Este archivo configura el despliegue automático en Render
+# Solo ejecuta el backend desde el monorepo
+
+services:
+  - type: web
+    name: befit-api
+    runtime: node
+    region: oregon # Puedes cambiar a: ohio, frankfurt, singapore
+
+    # IMPORTANTE: Especifica la carpeta del backend
+    rootDir: backend
+
+    # Comandos de build y start
+    buildCommand: npm install
+    startCommand: npm start
+
+    # Plan gratuito
+    plan: free
+
+    # Variables de entorno (configura en Render Dashboard)
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 10000
+      - key: GEMINI_API_KEY
+        sync: false # Se configura manualmente en dashboard
+      - key: SUPABASE_URL
+        sync: false
+      - key: SUPABASE_KEY
+        sync: false
+
+    # Health check
+    healthCheckPath: /health
+
+    # Auto-deploy cuando hay push a main
+    autoDeploy: true
