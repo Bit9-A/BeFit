@@ -7,6 +7,7 @@ import {
   TouchableOpacity,
   Alert,
   Modal,
+  Platform,
 } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 import { Ionicons } from "@expo/vector-icons";
@@ -335,14 +336,20 @@ export default function ProfileScreen() {
           <Animated.View entering={FadeInDown.delay(350)} className="mt-6">
             <TouchableOpacity
               onPress={() => {
-                Alert.alert(
-                  "Cerrar Sesión",
-                  "¿Estás seguro de que quieres salir?",
-                  [
-                    { text: "Cancelar", style: "cancel" },
-                    { text: "Salir", style: "destructive", onPress: signOut },
-                  ],
-                );
+                if (Platform.OS === "web") {
+                  if (window.confirm("¿Estás seguro de que quieres salir?")) {
+                    signOut();
+                  }
+                } else {
+                  Alert.alert(
+                    "Cerrar Sesión",
+                    "¿Estás seguro de que quieres salir?",
+                    [
+                      { text: "Cancelar", style: "cancel" },
+                      { text: "Salir", style: "destructive", onPress: signOut },
+                    ],
+                  );
+                }
               }}
               className="bg-red-500/20 py-4 rounded-2xl flex-row items-center justify-center"
             >

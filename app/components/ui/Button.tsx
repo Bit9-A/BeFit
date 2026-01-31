@@ -17,6 +17,8 @@ interface ButtonProps {
   disabled?: boolean;
   icon?: React.ReactNode;
   className?: string;
+  accessibilityLabel?: string;
+  accessibilityHint?: string;
 }
 
 export function Button({
@@ -28,6 +30,8 @@ export function Button({
   disabled = false,
   icon,
   className = "",
+  accessibilityLabel,
+  accessibilityHint,
 }: ButtonProps) {
   const scale = useSharedValue(1);
 
@@ -80,6 +84,10 @@ export function Button({
       style={animatedStyle}
       className={`${baseClasses} ${sizeClasses[size]} ${variantClasses[variant]} ${disabled ? "opacity-50" : ""} ${className}`}
       activeOpacity={0.8}
+      accessibilityRole="button"
+      accessibilityLabel={accessibilityLabel || title}
+      accessibilityHint={accessibilityHint}
+      accessibilityState={{ disabled: disabled || loading, busy: loading }}
     >
       {loading ? (
         <ActivityIndicator

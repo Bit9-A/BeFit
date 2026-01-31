@@ -97,16 +97,40 @@ class ApiService {
 
       const formData = new FormData();
 
-      // Create file object for upload
-      const filename = imageUri.split("/").pop() || "photo.jpg";
-      const match = /\.(\w+)$/.exec(filename);
-      const type = match ? `image/${match[1]}` : "image/jpeg";
+      // Check if we're on web (blob: URLs) or native (file:// URLs)
+      const isWeb =
+        typeof window !== "undefined" && imageUri.startsWith("blob:");
 
-      formData.append("image", {
-        uri: imageUri,
-        name: filename,
-        type,
-      } as any);
+      if (isWeb) {
+        // Web: Fetch the blob and create a File object
+        try {
+          const response = await fetch(imageUri);
+          const blob = await response.blob();
+          const file = new File([blob], "photo.jpg", {
+            type: blob.type || "image/jpeg",
+          });
+          formData.append("image", file);
+          console.log(
+            "[API] Web upload - blob converted to File:",
+            file.type,
+            file.size,
+          );
+        } catch (blobError) {
+          console.error("[API] Error converting blob:", blobError);
+          return { error: "Error processing image on web" };
+        }
+      } else {
+        // Native (React Native): Use the standard approach
+        const filename = imageUri.split("/").pop() || "photo.jpg";
+        const match = /\.(\w+)$/.exec(filename);
+        const type = match ? `image/${match[1]}` : "image/jpeg";
+
+        formData.append("image", {
+          uri: imageUri,
+          name: filename,
+          type,
+        } as any);
+      }
 
       if (userContext) {
         formData.append("userContext", JSON.stringify(userContext));

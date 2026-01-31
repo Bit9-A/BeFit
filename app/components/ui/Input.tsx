@@ -13,6 +13,8 @@ interface InputProps {
   error?: string;
   icon?: keyof typeof Ionicons.glyphMap;
   className?: string;
+  accessibilityLabel?: string;
+  accessibilityHint?: string;
 }
 
 export function Input({
@@ -26,6 +28,8 @@ export function Input({
   error,
   icon,
   className = "",
+  accessibilityLabel,
+  accessibilityHint,
 }: InputProps) {
   const [isFocused, setIsFocused] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
@@ -64,6 +68,8 @@ export function Input({
           autoCapitalize={autoCapitalize}
           onFocus={() => setIsFocused(true)}
           onBlur={() => setIsFocused(false)}
+          accessibilityLabel={accessibilityLabel || label}
+          accessibilityHint={accessibilityHint || placeholder}
         />
 
         {secureTextEntry && (
