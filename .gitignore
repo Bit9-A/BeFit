@@ -1,0 +1,13 @@
+backend/node_modules
+node_modules
+
+mobile/node_modules
+
+.env
+backend/.env
+mobile/.env
+
+.expo
+app/node_modules
+app/.expo
+app/.env
