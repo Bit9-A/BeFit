@@ -296,7 +296,7 @@ export default function GymScreen() {
       <SafeAreaView className="flex-1">
         <ScrollView
           className="flex-1 px-5"
-          contentContainerStyle={{ paddingBottom: 30 }}
+          contentContainerStyle={{ paddingBottom: 120 }}
         >
           {/* Header */}
           <Animated.View entering={FadeInUp.delay(100)} className="mt-4 mb-6">
@@ -312,10 +312,10 @@ export default function GymScreen() {
               <Animated.View entering={FadeInDown.delay(200)}>
                 <LinearGradient
                   colors={["#6366F1", "#4F46E5"]}
-                  className="rounded-3xl p-6 mb-6"
+                  className="rounded-3xl p-6 mb-6 overflow-hidden"
                 >
                   <View className="items-center">
-                    <View className="w-20 h-20 bg-white/20 rounded-3xl items-center justify-center mb-4">
+                    <View className="w-20 h-20 bg-white/20 rounded-3xl items-center justify-center mb-4 overflow-hidden">
                       <Ionicons name="barbell" size={40} color="#fff" />
                     </View>
                     <Text className="text-white text-xl font-bold text-center">
@@ -334,7 +334,7 @@ export default function GymScreen() {
                         colors={["#22D3EE", "#3B82F6"]}
                         start={{ x: 0, y: 0 }}
                         end={{ x: 1, y: 1 }}
-                        className="py-4 px-6 rounded-3xl flex-row items-center justify-center shadow-neon-cyan"
+                        className="py-4 px-6 rounded-3xl flex-row items-center justify-center shadow-neon-cyan overflow-hidden"
                       >
                         {loading ? (
                           <View className="flex-row items-center gap-3">
@@ -345,7 +345,7 @@ export default function GymScreen() {
                           </View>
                         ) : (
                           <>
-                            <View className="bg-white/20 p-2 rounded-xl mr-3">
+                            <View className="bg-white/20 p-2 rounded-xl mr-3 overflow-hidden">
                               <Ionicons name="flash" size={24} color="#fff" />
                             </View>
                             <View className="items-start">

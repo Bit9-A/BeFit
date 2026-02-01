@@ -28,7 +28,7 @@ interface ProfileItemProps {
 function ProfileItem({ label, value, icon, onEdit }: ProfileItemProps) {
   return (
     <View className="flex-row items-center py-4 border-b border-surface-light">
-      <View className="w-10 h-10 bg-primary-500/20 rounded-xl items-center justify-center mr-4">
+      <View className="w-10 h-10 bg-primary-500/20 rounded-xl items-center justify-center mr-4 overflow-hidden">
         <Ionicons name={icon} size={20} color="#6366F1" />
       </View>
       <View className="flex-1">
@@ -204,7 +204,7 @@ export default function ProfileScreen() {
       <SafeAreaView className="flex-1">
         <ScrollView
           className="flex-1 px-5"
-          contentContainerStyle={{ paddingBottom: 30 }}
+          contentContainerStyle={{ paddingBottom: 120 }}
         >
           {/* Header */}
           <Animated.View entering={FadeInUp.delay(100)} className="mt-4 mb-6">
@@ -218,9 +218,9 @@ export default function ProfileScreen() {
           <Animated.View entering={FadeInDown.delay(150)}>
             <LinearGradient
               colors={["#A855F7", "#7E22CE"]}
-              className="rounded-3xl p-6 mb-6 items-center"
+              className="rounded-3xl p-6 mb-6 items-center overflow-hidden"
             >
-              <View className="w-20 h-20 bg-white/20 rounded-full items-center justify-center mb-3">
+              <View className="w-20 h-20 bg-white/20 rounded-full items-center justify-center mb-3 overflow-hidden">
                 <Text className="text-white text-3xl font-bold">
                   {profile?.full_name?.charAt(0)?.toUpperCase() || "U"}
                 </Text>
@@ -302,7 +302,7 @@ export default function ProfileScreen() {
               </Text>
               <TouchableOpacity
                 onPress={() => setShowAddWeight(true)}
-                className="bg-primary-500 px-3 py-1.5 rounded-lg flex-row items-center"
+                className="bg-primary-500 px-3 py-1.5 rounded-lg flex-row items-center overflow-hidden"
               >
                 <Ionicons name="add" size={16} color="#fff" />
                 <Text className="text-white text-sm ml-1">Añadir</Text>
@@ -382,7 +382,7 @@ export default function ProfileScreen() {
                   );
                 }
               }}
-              className="bg-red-500/20 py-4 rounded-2xl flex-row items-center justify-center"
+              className="bg-red-500/20 py-4 rounded-2xl flex-row items-center justify-center overflow-hidden"
             >
               <Ionicons name="log-out-outline" size={20} color="#EF4444" />
               <Text className="text-red-500 font-semibold ml-2">
@@ -395,7 +395,7 @@ export default function ProfileScreen() {
         {/* Edit Modal */}
         <Modal visible={showEditModal} transparent animationType="fade">
           <View className="flex-1 bg-black/80 items-center justify-center px-6">
-            <View className="bg-surface w-full rounded-3xl p-6">
+            <View className="bg-surface w-full rounded-3xl p-6 overflow-hidden">
               <Text className="text-white text-lg font-bold mb-4">
                 Editar{" "}
                 {editField === "full_name"
@@ -413,7 +413,7 @@ export default function ProfileScreen() {
                     <TouchableOpacity
                       key={goal}
                       onPress={() => setEditValue(goal)}
-                      className={`py-4 px-4 rounded-xl border ${
+                      className={`py-4 px-4 rounded-xl border overflow-hidden ${
                         editValue === goal
                           ? "bg-primary-500/20 border-primary-500"
                           : "bg-surface-light border-surface-light"
@@ -441,7 +441,7 @@ export default function ProfileScreen() {
                     <TouchableOpacity
                       key={level}
                       onPress={() => setEditValue(level)}
-                      className={`py-3 px-4 rounded-xl border ${
+                      className={`py-3 px-4 rounded-xl border overflow-hidden ${
                         editValue === level
                           ? "bg-primary-500/20 border-primary-500"
                           : "bg-surface-light border-surface-light"
@@ -471,14 +471,14 @@ export default function ProfileScreen() {
               <View className="flex-row gap-3 mt-4">
                 <TouchableOpacity
                   onPress={() => setShowEditModal(false)}
-                  className="flex-1 py-3 bg-surface-light rounded-xl items-center"
+                  className="flex-1 py-3 bg-surface-light rounded-xl items-center overflow-hidden"
                 >
                   <Text className="text-slate-400 font-medium">Cancelar</Text>
                 </TouchableOpacity>
                 <TouchableOpacity
                   onPress={saveEdit}
                   disabled={saving}
-                  className="flex-1 py-3 bg-primary-500 rounded-xl items-center"
+                  className="flex-1 py-3 bg-primary-500 rounded-xl items-center overflow-hidden"
                 >
                   <Text className="text-white font-medium">
                     {saving ? "Guardando..." : "Guardar"}
@@ -492,7 +492,7 @@ export default function ProfileScreen() {
         {/* Add Weight Modal */}
         <Modal visible={showAddWeight} transparent animationType="fade">
           <View className="flex-1 bg-black/80 items-center justify-center px-6">
-            <View className="bg-surface w-full rounded-3xl p-6">
+            <View className="bg-surface w-full rounded-3xl p-6 overflow-hidden">
               <Text className="text-white text-lg font-bold mb-4">
                 Registrar Peso
               </Text>
@@ -506,14 +506,14 @@ export default function ProfileScreen() {
               <View className="flex-row gap-3 mt-4">
                 <TouchableOpacity
                   onPress={() => setShowAddWeight(false)}
-                  className="flex-1 py-3 bg-surface-light rounded-xl items-center"
+                  className="flex-1 py-3 bg-surface-light rounded-xl items-center overflow-hidden"
                 >
                   <Text className="text-slate-400 font-medium">Cancelar</Text>
                 </TouchableOpacity>
                 <TouchableOpacity
                   onPress={addWeight}
                   disabled={saving || !newWeight}
-                  className="flex-1 py-3 bg-accent-500 rounded-xl items-center"
+                  className="flex-1 py-3 bg-accent-500 rounded-xl items-center overflow-hidden"
                 >
                   <Text className="text-white font-medium">
                     {saving ? "Guardando..." : "Guardar"}

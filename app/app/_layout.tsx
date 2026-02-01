@@ -2,7 +2,7 @@ import "../global.css";
 import { useEffect } from "react";
 import { Stack, useRouter, useSegments } from "expo-router";
 import { StatusBar } from "expo-status-bar";
-import { View, ActivityIndicator } from "react-native";
+import { View, ActivityIndicator, Platform } from "react-native";
 import {
   useFonts,
   Inter_400Regular,
@@ -10,6 +10,7 @@ import {
   Inter_600SemiBold,
   Inter_700Bold,
 } from "@expo-google-fonts/inter";
+import * as NavigationBar from "expo-navigation-bar";
 import { useAuthStore } from "../stores/authStore";
 
 export default function RootLayout() {
@@ -24,6 +25,10 @@ export default function RootLayout() {
   });
 
   useEffect(() => {
+    if (Platform.OS === "android") {
+      NavigationBar.setPositionAsync("absolute");
+      NavigationBar.setBackgroundColorAsync("#ffffff00");
+    }
     initialize();
   }, []);
 

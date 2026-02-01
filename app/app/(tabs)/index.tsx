@@ -67,7 +67,7 @@ interface MetricCardProps {
 
 function MetricCard({ title, value, subtitle, icon, color }: MetricCardProps) {
   return (
-    <View className="bg-surface/80 rounded-2xl p-4 flex-1 border border-surface-light">
+    <View className="bg-surface/80 rounded-2xl overflow-hidden p-4 flex-1 border border-surface-light">
       <View className="flex-row items-center justify-between mb-2">
         <Text className="text-slate-400 text-sm">{title}</Text>
         <Ionicons name={icon} size={18} color={color} />
@@ -138,7 +138,7 @@ export default function DashboardScreen() {
       <SafeAreaView className="flex-1">
         <ScrollView
           className="flex-1 px-5"
-          contentContainerStyle={{ paddingBottom: 30 }}
+          contentContainerStyle={{ paddingBottom: 120 }}
           refreshControl={
             <RefreshControl
               refreshing={refreshing}
@@ -225,7 +225,7 @@ export default function DashboardScreen() {
             <Text className="text-white text-lg font-semibold mb-4">
               Acciones Rápidas
             </Text>
-            <View className="bg-surface/60 rounded-3xl p-5 flex-row border border-surface-light">
+            <View className="bg-surface/60 rounded-3xl overflow-hidden p-5 flex-row border border-surface-light">
               <QuickAction
                 icon="barbell"
                 label="Entrenar"

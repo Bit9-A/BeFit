@@ -123,7 +123,7 @@ export function DailyMissions() {
           colors={["#22D3EE", "#8B5CF6"]} // Cyan to Purple
           start={{ x: 0, y: 0 }}
           end={{ x: 1, y: 1 }}
-          className="rounded-3xl p-[1px]"
+          className="rounded-3xl overflow-hidden p-[1px]"
         >
           <View className="bg-slate-900/95 backdrop-blur-xl rounded-3xl p-5">
             {/* Header */}

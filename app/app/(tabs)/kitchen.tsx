@@ -94,7 +94,7 @@ export default function KitchenScreen() {
       <SafeAreaView className="flex-1">
         <ScrollView
           className="flex-1 px-5"
-          contentContainerStyle={{ paddingBottom: 30 }}
+          contentContainerStyle={{ paddingBottom: 120 }}
         >
           {/* Header */}
           <Animated.View entering={FadeInUp.delay(100)} className="mt-4 mb-6">
@@ -112,10 +112,10 @@ export default function KitchenScreen() {
               <Animated.View entering={FadeInDown.delay(200)}>
                 <LinearGradient
                   colors={["#0891B2", "#22D3EE"]}
-                  className="rounded-3xl p-6 mb-6"
+                  className="rounded-3xl p-6 mb-6 overflow-hidden"
                 >
                   <View className="items-center">
-                    <View className="w-20 h-20 bg-white/20 rounded-3xl items-center justify-center mb-4">
+                    <View className="w-20 h-20 bg-white/20 rounded-3xl items-center justify-center mb-4 overflow-hidden">
                       <Ionicons name="scan" size={40} color="#fff" />
                     </View>
                     <Text className="text-white text-xl font-bold text-center">
@@ -129,7 +129,7 @@ export default function KitchenScreen() {
                     <View className="flex-row gap-4">
                       <TouchableOpacity
                         onPress={takePhoto}
-                        className="flex-1 bg-white/20 py-4 rounded-2xl flex-row items-center justify-center"
+                        className="flex-1 bg-white/20 py-4 rounded-2xl flex-row items-center justify-center overflow-hidden"
                       >
                         <Ionicons name="camera" size={22} color="#fff" />
                         <Text className="text-white font-semibold ml-2">
@@ -138,7 +138,7 @@ export default function KitchenScreen() {
                       </TouchableOpacity>
                       <TouchableOpacity
                         onPress={pickImage}
-                        className="flex-1 bg-white/20 py-4 rounded-2xl flex-row items-center justify-center"
+                        className="flex-1 bg-white/20 py-4 rounded-2xl flex-row items-center justify-center overflow-hidden"
                       >
                         <Ionicons name="images" size={22} color="#fff" />
                         <Text className="text-white font-semibold ml-2">
@@ -157,7 +157,7 @@ export default function KitchenScreen() {
                 </Text>
                 <Card>
                   <View className="flex-row items-center mb-4">
-                    <View className="w-10 h-10 bg-accent-500/20 rounded-xl items-center justify-center mr-3">
+                    <View className="w-10 h-10 bg-accent-500/20 rounded-xl items-center justify-center mr-3 overflow-hidden">
                       <Text className="text-accent-500 font-bold">1</Text>
                     </View>
                     <Text className="text-slate-300 flex-1">
@@ -165,7 +165,7 @@ export default function KitchenScreen() {
                     </Text>
                   </View>
                   <View className="flex-row items-center mb-4">
-                    <View className="w-10 h-10 bg-primary-500/20 rounded-xl items-center justify-center mr-3">
+                    <View className="w-10 h-10 bg-primary-500/20 rounded-xl items-center justify-center mr-3 overflow-hidden">
                       <Text className="text-primary-500 font-bold">2</Text>
                     </View>
                     <Text className="text-slate-300 flex-1">
@@ -173,7 +173,7 @@ export default function KitchenScreen() {
                     </Text>
                   </View>
                   <View className="flex-row items-center">
-                    <View className="w-10 h-10 bg-secondary-500/20 rounded-xl items-center justify-center mr-3">
+                    <View className="w-10 h-10 bg-secondary-500/20 rounded-xl items-center justify-center mr-3 overflow-hidden">
                       <Text className="text-secondary-500 font-bold">3</Text>
                     </View>
                     <Text className="text-slate-300 flex-1">
@@ -208,7 +208,7 @@ export default function KitchenScreen() {
                     colors={["#22D3EE", "#06B6D4"]}
                     start={{ x: 0, y: 0 }}
                     end={{ x: 1, y: 1 }}
-                    className="py-4 px-6 rounded-3xl flex-row items-center justify-center shadow-neon-cyan"
+                    className="py-4 px-6 rounded-3xl flex-row items-center justify-center shadow-neon-cyan overflow-hidden"
                   >
                     {loading ? (
                       <View className="flex-row items-center gap-3">
@@ -219,7 +219,7 @@ export default function KitchenScreen() {
                       </View>
                     ) : (
                       <>
-                        <View className="bg-white/20 p-2 rounded-xl mr-3">
+                        <View className="bg-white/20 p-2 rounded-xl mr-3 overflow-hidden">
                           <Ionicons name="sparkles" size={24} color="#fff" />
                         </View>
                         <View className="items-start">
@@ -274,6 +274,7 @@ export default function KitchenScreen() {
               <Animated.View entering={FadeInDown.delay(100)}>
                 {/* Ingredients */}
                 <Card className="mb-4">
+                  r
                   <View className="flex-row items-center mb-3">
                     <Ionicons name="nutrition" size={20} color="#10B981" />
                     <Text className="text-white font-semibold ml-2">
@@ -284,7 +285,7 @@ export default function KitchenScreen() {
                     {analysis.ingredientes_detectados?.map((ing, i) => (
                       <View
                         key={i}
-                        className="bg-accent-500/20 px-3 py-1.5 rounded-full"
+                        className="bg-accent-500/20 px-3 py-1.5 rounded-full overflow-hidden"
                       >
                         <Text className="text-accent-400 text-sm">{ing}</Text>
                       </View>
@@ -298,7 +299,7 @@ export default function KitchenScreen() {
                 <Animated.View entering={FadeInDown.delay(200)}>
                   <LinearGradient
                     colors={["#6366F1", "#8B5CF6"]}
-                    className="rounded-3xl p-5 mb-4"
+                    className="rounded-3xl p-5 mb-4 overflow-hidden"
                   >
                     <Text className="text-white text-xl font-bold mb-2">
                       {analysis.receta.nombre}
@@ -306,19 +307,19 @@ export default function KitchenScreen() {
 
                     {/* Macros */}
                     <View className="flex-row gap-3 mb-4">
-                      <View className="flex-1 bg-white/20 rounded-xl p-3 items-center">
+                      <View className="flex-1 bg-white/20 rounded-xl p-3 items-center overflow-hidden">
                         <Text className="text-white/70 text-xs">Calorías</Text>
                         <Text className="text-white font-bold">
                           {analysis.receta.calorias}
                         </Text>
                       </View>
-                      <View className="flex-1 bg-white/20 rounded-xl p-3 items-center">
+                      <View className="flex-1 bg-white/20 rounded-xl p-3 items-center overflow-hidden">
                         <Text className="text-white/70 text-xs">Proteína</Text>
                         <Text className="text-white font-bold">
                           {analysis.receta.macros?.proteina || "0g"}
                         </Text>
                       </View>
-                      <View className="flex-1 bg-white/20 rounded-xl p-3 items-center">
+                      <View className="flex-1 bg-white/20 rounded-xl p-3 items-center overflow-hidden">
                         <Text className="text-white/70 text-xs">Carbos</Text>
                         <Text className="text-white font-bold">
                           {analysis.receta.macros?.carbohidratos || "0g"}
