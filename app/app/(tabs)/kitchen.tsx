@@ -274,7 +274,6 @@ export default function KitchenScreen() {
               <Animated.View entering={FadeInDown.delay(100)}>
                 {/* Ingredients */}
                 <Card className="mb-4">
-                  r
                   <View className="flex-row items-center mb-3">
                     <Ionicons name="nutrition" size={20} color="#10B981" />
                     <Text className="text-white font-semibold ml-2">
