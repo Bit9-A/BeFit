@@ -12,7 +12,21 @@ import {
 import { Link } from "expo-router";
 import { LinearGradient } from "expo-linear-gradient";
 import { Ionicons } from "@expo/vector-icons";
-import Animated, { FadeInDown, FadeInUp } from "react-native-reanimated";
+import Animated, {
+  FadeInDown,
+  FadeInUp,
+  useSharedValue,
+  withRepeat,
+  withTiming,
+  useAnimatedStyle,
+  withSequence,
+  Easing,
+} from "react-native-reanimated";
+import { cssInterop } from "nativewind";
+
+cssInterop(Animated.Text, { className: "style" });
+cssInterop(Animated.View, { className: "style" });
+
 import { Button, Input } from "../../components/ui";
 import { useAuthStore } from "../../stores/authStore";
 
@@ -21,6 +35,26 @@ export default function LoginScreen() {
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const { signIn, isLoading } = useAuthStore();
+  const glow = useSharedValue(0);
+
+  React.useEffect(() => {
+    glow.value = withRepeat(
+      withSequence(
+        withTiming(1, { duration: 2500, easing: Easing.inOut(Easing.ease) }),
+        withTiming(0, { duration: 2500, easing: Easing.inOut(Easing.ease) }),
+      ),
+      -1,
+      true,
+    );
+  }, []);
+
+  const animatedStyle = useAnimatedStyle(() => {
+    return {
+      textShadowRadius: 10 + glow.value * 15, // 10px to 25px radius
+      textShadowColor: `rgba(34, 211, 238, ${0.3 + glow.value * 0.5})`, // Opacity change
+      transform: [{ scale: 1 + glow.value * 0.05 }], // Subtle scale
+    };
+  });
 
   const handleLogin = async () => {
     if (!email || !password) {
@@ -59,13 +93,20 @@ export default function LoginScreen() {
                 >
                   <Image
                     source={require("../../assets/images/icon.png")}
-                    className="w-64 h-64 rounded-[48px] shadow-2xl mb-8"
+                    className="rounded-[40px] shadow-2xl mb-8 overflow-hidden"
                     resizeMode="contain"
+                    style={{ width: 150, height: 150, alignSelf: "center" }}
                   />
-                  <Text className="text-7xl font-bold text-white tracking-tight text-center shadow-neon-cyan">
+                  <Animated.Text
+                    style={[animatedStyle]}
+                    className="text-7xl font-bold text-white tracking-tight text-center"
+                  >
                     Be Fit
-                  </Text>
-                  <Text className="text-slate-300 mt-4 text-center text-3xl font-medium max-w-lg">
+                  </Animated.Text>
+                  <Text
+                    style={[animatedStyle]}
+                    className="text-slate-300 mt-4 text-center text-3xl font-medium max-w-lg"
+                  >
                     Tu compañero de bienestar holístico e inteligente
                   </Text>
                 </Animated.View>
@@ -75,23 +116,26 @@ export default function LoginScreen() {
               <View className="flex-1 lg:w-1/2 items-center justify-center px-6 py-12">
                 <View className="w-full max-w-md">
                   {/* MOBILE HEADER (Logo & Title) - Hidden on Large Screens */}
-                  <Animated.View
-                    entering={FadeInUp.delay(100).springify()}
-                    className="items-center mb-8 lg:hidden"
-                  >
-                    <Image
-                      source={require("../../assets/images/icon.png")}
-                      className="w-32 h-32 mb-6 rounded-3xl shadow-xl"
-                      style={{ borderRadius: 32 }}
-                      resizeMode="contain"
-                    />
-                    <Text className="text-4xl font-bold text-white tracking-tight text-center">
-                      Be Fit
-                    </Text>
-                    <Text className="text-slate-400 mt-2 text-center text-lg">
-                      Tu compañero de bienestar holístico
-                    </Text>
-                  </Animated.View>
+                  {/* MOBILE HEADER (Logo & Title) - Hidden on Large Screens */}
+                  <View className="lg:hidden w-full items-center">
+                    <Animated.View
+                      entering={FadeInUp.delay(100).springify()}
+                      className="items-center mb-8"
+                    >
+                      <Image
+                        source={require("../../assets/images/icon.png")}
+                        className="w-32 h-32 mb-6 rounded-3xl shadow-xl"
+                        style={{ borderRadius: 32 }}
+                        resizeMode="contain"
+                      />
+                      <Text className="text-4xl font-bold text-white tracking-tight text-center">
+                        Be Fit
+                      </Text>
+                      <Text className="text-slate-400 mt-2 text-center text-lg">
+                        Tu compañero de bienestar holístico
+                      </Text>
+                    </Animated.View>
+                  </View>
 
                   {/* Form Card */}
                   <Animated.View

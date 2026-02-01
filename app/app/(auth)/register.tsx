@@ -72,12 +72,13 @@ export default function RegisterScreen() {
                 >
                   <Image
                     source={require("../../assets/images/icon.png")}
-                    className="w-56 h-56 rounded-[40px] shadow-2xl mb-8"
+                    className="rounded-[40px] shadow-2xl mb-8"
                     resizeMode="contain"
+                    style={{ width: 150, height: 150, alignSelf: "center" }}
                   />
-                  <Text className="text-6xl font-bold text-white tracking-tight text-center shadow-neon-purple">
+                  <Animated.Text className="text-7xl font-bold text-white tracking-tight text-center">
                     Únete a Be Fit
-                  </Text>
+                  </Animated.Text>
                   <Text className="text-slate-300 mt-4 text-center text-2xl font-medium max-w-md">
                     Empieza tu transformación hoy mismo. Mente, cuerpo y cocina
                     personalizados.
@@ -89,23 +90,25 @@ export default function RegisterScreen() {
               <View className="flex-1 lg:w-1/2 items-center justify-center px-6 py-12">
                 <View className="w-full max-w-md">
                   {/* MOBILE HEADER - Hidden on Large Screens */}
-                  <Animated.View
-                    entering={FadeInUp.delay(100).springify()}
-                    className="items-center mb-8 lg:hidden"
-                  >
-                    <Image
-                      source={require("../../assets/images/icon.png")}
-                      className="w-24 h-24 mb-4 rounded-3xl shadow-xl"
-                      resizeMode="contain"
-                      style={{ borderRadius: 24 }}
-                    />
-                    <Text className="text-3xl font-bold text-white tracking-tight text-center">
-                      Crear Cuenta
-                    </Text>
-                    <Text className="text-slate-400 mt-2 text-center">
-                      Únete a la comunidad Be Fit
-                    </Text>
-                  </Animated.View>
+                  <View className="lg:hidden w-full items-center">
+                    <Animated.View
+                      entering={FadeInUp.delay(100).springify()}
+                      className="items-center mb-8"
+                    >
+                      <Image
+                        source={require("../../assets/images/icon.png")}
+                        className="w-24 h-24 mb-4 rounded-3xl shadow-xl"
+                        resizeMode="contain"
+                        style={{ borderRadius: 24 }}
+                      />
+                      <Text className="text-3xl font-bold text-white tracking-tight text-center">
+                        Crear Cuenta
+                      </Text>
+                      <Text className="text-slate-400 mt-2 text-center">
+                        Únete a la comunidad Be Fit
+                      </Text>
+                    </Animated.View>
+                  </View>
 
                   {/* Form Card */}
                   <Animated.View
@@ -173,7 +176,7 @@ export default function RegisterScreen() {
                       onPress={handleRegister}
                       loading={isLoading}
                       variant="secondary"
-                      className="mt-6 shadow-lg"
+                      className="mt-6 shadow-lg "
                       size="lg"
                       accessibilityLabel="Crear Cuenta"
                       accessibilityHint="Presiona para registrarte en la aplicación"
@@ -185,7 +188,7 @@ export default function RegisterScreen() {
                       </Text>
                       <Link href="/(auth)/login" asChild>
                         <TouchableOpacity>
-                          <Text className="text-primary-500 font-semibold">
+                          <Text className="text-primary-500 font-semibold ">
                             Inicia Sesión
                           </Text>
                         </TouchableOpacity>

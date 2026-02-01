@@ -7,7 +7,11 @@ import Animated, {
 } from "react-native-reanimated";
 import { triggerHaptic } from "../../services/haptics";
 
+import { cssInterop } from "nativewind";
+
 const AnimatedTouchable = Animated.createAnimatedComponent(TouchableOpacity);
+
+cssInterop(AnimatedTouchable, { className: "style" });
 
 interface ButtonProps {
   title: string;

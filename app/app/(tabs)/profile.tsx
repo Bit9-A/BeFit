@@ -14,8 +14,10 @@ import { Ionicons } from "@expo/vector-icons";
 import Animated, { FadeInDown, FadeInUp } from "react-native-reanimated";
 import { LineChart } from "react-native-gifted-charts";
 import { Button, Input, Card } from "../../components/ui";
+import { XPBar } from "../../components/gamification/XPBar";
 import { useAuthStore } from "../../stores/authStore";
 import { useUserStore } from "../../stores/userStore";
+import { useGamificationStore } from "../../stores/gamificationStore";
 import { supabase } from "../../services/supabase";
 
 interface ProfileItemProps {
@@ -53,6 +55,9 @@ export default function ProfileScreen() {
   const [editField, setEditField] = useState<string>("");
   const [editValue, setEditValue] = useState<string>("");
   const [saving, setSaving] = useState(false);
+
+  // Gamification
+  const { currentStreak, level } = useGamificationStore();
 
   // Weight history
   const [weights, setWeights] = useState<
@@ -241,14 +246,16 @@ export default function ProfileScreen() {
 
                     {/* Desktop Actions (Logout) */}
                     <TouchableOpacity
-                      onPress={() => {
+                      onPress={async () => {
                         if (Platform.OS === "web") {
                           if (
                             window.confirm(
                               "¿Estás seguro de que quieres salir?",
                             )
                           ) {
-                            signOut();
+                            await signOut();
+                            // Force redirect on web if needed, though _layout should handle it
+                            // router.replace("/(auth)/login");
                           }
                         } else {
                           Alert.alert(
@@ -289,6 +296,47 @@ export default function ProfileScreen() {
                   <Text className="text-slate-400 text-lg mt-2">
                     Visualiza y edita tus datos y progreso
                   </Text>
+                </Animated.View>
+
+                {/* Gamification Header */}
+                <Animated.View entering={FadeInDown.delay(150)}>
+                  <XPBar />
+                </Animated.View>
+
+                {/* Statistics Grid */}
+                <Animated.View
+                  entering={FadeInDown.delay(180)}
+                  className="flex-row gap-3 mb-8"
+                >
+                  <View className="flex-1 bg-surface rounded-2xl p-4 items-center border border-surface-light">
+                    <View className="w-10 h-10 bg-orange-500/20 rounded-full items-center justify-center mb-2">
+                      <Ionicons name="flame" size={20} color="#F97316" />
+                    </View>
+                    <Text className="text-2xl font-bold text-white">
+                      {currentStreak}
+                    </Text>
+                    <Text className="text-slate-400 text-xs">Racha Días</Text>
+                  </View>
+
+                  <View className="flex-1 bg-surface rounded-2xl p-4 items-center border border-surface-light">
+                    <View className="w-10 h-10 bg-purple-500/20 rounded-full items-center justify-center mb-2">
+                      <Ionicons name="trophy" size={20} color="#A855F7" />
+                    </View>
+                    <Text className="text-2xl font-bold text-white">
+                      {level}
+                    </Text>
+                    <Text className="text-slate-400 text-xs">Nivel</Text>
+                  </View>
+
+                  <View className="flex-1 bg-surface rounded-2xl p-4 items-center border border-surface-light">
+                    <View className="w-10 h-10 bg-cyan-500/20 rounded-full items-center justify-center mb-2">
+                      <Ionicons name="scale" size={20} color="#22D3EE" />
+                    </View>
+                    <Text className="text-xl font-bold text-white">
+                      {weights.length > 0 ? `${weights[0].weight}kg` : "--"}
+                    </Text>
+                    <Text className="text-slate-400 text-xs">Peso Actual</Text>
+                  </View>
                 </Animated.View>
 
                 {/* Personal Info */}
@@ -439,12 +487,12 @@ export default function ProfileScreen() {
                   className="mt-6 lg:hidden"
                 >
                   <TouchableOpacity
-                    onPress={() => {
+                    onPress={async () => {
                       if (Platform.OS === "web") {
                         if (
                           window.confirm("¿Estás seguro de que quieres salir?")
                         ) {
-                          signOut();
+                          await signOut();
                         }
                       } else {
                         Alert.alert(
