@@ -202,207 +202,285 @@ export default function ProfileScreen() {
   return (
     <LinearGradient colors={["#09090b", "#18181b"]} className="flex-1">
       <SafeAreaView className="flex-1" edges={["top"]}>
-        <View className="flex-1 w-full max-w-md mx-auto">
+        <View className="flex-1 w-full lg:max-w-7xl mx-auto">
           <ScrollView
             className="flex-1 px-5"
             contentContainerStyle={{ paddingBottom: 120 }}
           >
-            {/* Header */}
-            <Animated.View entering={FadeInUp.delay(100)} className="mt-4 mb-6">
+            {/* Header (Mobile Only) */}
+            <Animated.View
+              entering={FadeInUp.delay(100)}
+              className="mt-4 mb-6 lg:hidden"
+            >
               <Text className="text-3xl font-bold text-white">Mi Perfil</Text>
               <Text className="text-slate-400 mt-2">
                 Gestiona tu información personal
               </Text>
             </Animated.View>
 
-            {/* Profile Card */}
-            <Animated.View entering={FadeInDown.delay(150)}>
-              <LinearGradient
-                colors={["#A855F7", "#7E22CE"]}
-                className="rounded-3xl p-6 mb-6 items-center overflow-hidden"
-              >
-                <View className="w-20 h-20 bg-white/20 rounded-full items-center justify-center mb-3 overflow-hidden">
-                  <Text className="text-white text-3xl font-bold">
-                    {profile?.full_name?.charAt(0)?.toUpperCase() || "U"}
-                  </Text>
-                </View>
-                <Text className="text-white text-xl font-bold">
-                  {profile?.full_name || "Usuario"}
-                </Text>
-                <Text className="text-white/70">{user?.email}</Text>
-              </LinearGradient>
-            </Animated.View>
+            <View className="flex-col lg:flex-row lg:gap-10 lg:items-start lg:mt-8">
+              {/* LEFT COLUMN (Sidebar) */}
+              <View className="lg:w-1/3 lg:sticky lg:top-8 mb-6 lg:mb-0">
+                {/* Profile Card */}
+                <Animated.View entering={FadeInDown.delay(150)}>
+                  <LinearGradient
+                    colors={["#A855F7", "#7E22CE"]}
+                    className="rounded-3xl p-6 lg:p-10 items-center overflow-hidden shadow-2xl"
+                  >
+                    <View className="w-24 h-24 lg:w-32 lg:h-32 bg-white/20 rounded-full items-center justify-center mb-4 overflow-hidden border-4 border-white/10">
+                      <Text className="text-white text-4xl lg:text-5xl font-bold">
+                        {profile?.full_name?.charAt(0)?.toUpperCase() || "U"}
+                      </Text>
+                    </View>
+                    <Text className="text-white text-2xl lg:text-3xl font-bold text-center">
+                      {profile?.full_name || "Usuario"}
+                    </Text>
+                    <Text className="text-white/80 text-lg mt-1 mb-6">
+                      {user?.email}
+                    </Text>
 
-            {/* Personal Info */}
-            <Animated.View entering={FadeInDown.delay(200)}>
-              <Text className="text-white font-semibold text-lg mb-3">
-                Información Personal
-              </Text>
-              <Card className="mb-6">
-                <ProfileItem
-                  label="Nombre"
-                  value={profile?.full_name || ""}
-                  icon="person"
-                  onEdit={() =>
-                    handleEdit("full_name", profile?.full_name || "")
-                  }
-                />
-                <ProfileItem
-                  label="Altura"
-                  value={profile?.height ? `${profile.height} cm` : ""}
-                  icon="resize-outline"
-                  onEdit={() =>
-                    handleEdit("height", profile?.height?.toString() || "")
-                  }
-                />
-                <ProfileItem
-                  label="Edad"
-                  value={calculateAge(profile?.birth_date)}
-                  icon="calendar"
-                />
-                <ProfileItem
-                  label="Género"
-                  value={
-                    profile?.gender === "male"
-                      ? "Masculino"
-                      : profile?.gender === "female"
-                        ? "Femenino"
-                        : "Otro"
-                  }
-                  icon="male-female"
-                />
-              </Card>
-            </Animated.View>
-
-            {/* Fitness Info */}
-            <Animated.View entering={FadeInDown.delay(250)}>
-              <Text className="text-white font-semibold text-lg mb-3">
-                Configuración Fitness
-              </Text>
-              <Card className="mb-6">
-                <ProfileItem
-                  label="Objetivo"
-                  value={getGoalLabel(profile?.goal)}
-                  icon="trophy"
-                  onEdit={() => handleEdit("goal", profile?.goal || "")}
-                />
-                <ProfileItem
-                  label="Nivel de Actividad"
-                  value={getActivityLabel(profile?.activity_level)}
-                  icon="fitness"
-                  onEdit={() =>
-                    handleEdit("activity_level", profile?.activity_level || "")
-                  }
-                />
-              </Card>
-            </Animated.View>
-
-            {/* Weight Progress */}
-            <Animated.View entering={FadeInDown.delay(300)}>
-              <View className="flex-row items-center justify-between mb-3">
-                <Text className="text-white font-semibold text-lg">
-                  Historial de Peso
-                </Text>
-                <TouchableOpacity
-                  onPress={() => setShowAddWeight(true)}
-                  className="bg-primary-500 px-3 py-1.5 rounded-lg flex-row items-center overflow-hidden"
-                >
-                  <Ionicons name="add" size={16} color="#fff" />
-                  <Text className="text-white text-sm ml-1">Añadir</Text>
-                </TouchableOpacity>
+                    {/* Desktop Actions (Logout) */}
+                    <TouchableOpacity
+                      onPress={() => {
+                        if (Platform.OS === "web") {
+                          if (
+                            window.confirm(
+                              "¿Estás seguro de que quieres salir?",
+                            )
+                          ) {
+                            signOut();
+                          }
+                        } else {
+                          Alert.alert(
+                            "Cerrar Sesión",
+                            "¿Estás seguro de que quieres salir?",
+                            [
+                              { text: "Cancelar", style: "cancel" },
+                              {
+                                text: "Salir",
+                                style: "destructive",
+                                onPress: signOut,
+                              },
+                            ],
+                          );
+                        }
+                      }}
+                      className="bg-white/20 w-full py-3 rounded-xl flex-row items-center justify-center overflow-hidden"
+                    >
+                      <Ionicons name="log-out-outline" size={20} color="#fff" />
+                      <Text className="text-white font-semibold ml-2">
+                        Cerrar Sesión
+                      </Text>
+                    </TouchableOpacity>
+                  </LinearGradient>
+                </Animated.View>
               </View>
-              <Card>
-                {weights.length === 0 ? (
-                  <Text className="text-slate-400 text-center py-4">
-                    No hay registros de peso
+
+              {/* RIGHT COLUMN (Content) */}
+              <View className="flex-1 lg:w-2/3">
+                {/* Desktop Header */}
+                <Animated.View
+                  entering={FadeInUp.delay(100)}
+                  className="hidden lg:flex mb-8"
+                >
+                  <Text className="text-4xl font-bold text-white">
+                    Tu Perfil
                   </Text>
-                ) : (
-                  <>
-                    {/* Chart */}
-                    {weights.length > 1 && (
-                      <View className="mb-6 -ml-4">
-                        <LineChart
-                          data={weights
-                            .slice()
-                            .reverse()
-                            .map((w) => ({ value: w.weight, label: w.date }))}
-                          color="#A855F7"
-                          thickness={3}
-                          dataPointsColor="#C084FC"
-                          textColor="gray"
-                          yAxisTextStyle={{ color: "gray" }}
-                          xAxisLabelTextStyle={{ color: "gray", fontSize: 10 }}
-                          hideRules
-                          hideAxesAndRules
-                          curved
-                          adjustToWidth
-                          width={300}
-                          height={180}
-                          initialSpacing={20}
-                          spacing={60}
-                          isAnimated
-                        />
-                      </View>
+                  <Text className="text-slate-400 text-lg mt-2">
+                    Visualiza y edita tus datos y progreso
+                  </Text>
+                </Animated.View>
+
+                {/* Personal Info */}
+                <Animated.View entering={FadeInDown.delay(200)}>
+                  <Text className="text-white font-semibold text-lg mb-3">
+                    Información Personal
+                  </Text>
+                  <Card className="mb-6">
+                    <ProfileItem
+                      label="Nombre"
+                      value={profile?.full_name || ""}
+                      icon="person"
+                      onEdit={() =>
+                        handleEdit("full_name", profile?.full_name || "")
+                      }
+                    />
+                    <ProfileItem
+                      label="Altura"
+                      value={profile?.height ? `${profile.height} cm` : ""}
+                      icon="resize-outline"
+                      onEdit={() =>
+                        handleEdit("height", profile?.height?.toString() || "")
+                      }
+                    />
+                    <ProfileItem
+                      label="Edad"
+                      value={calculateAge(profile?.birth_date)}
+                      icon="calendar"
+                    />
+                    <ProfileItem
+                      label="Género"
+                      value={
+                        profile?.gender === "male"
+                          ? "Masculino"
+                          : profile?.gender === "female"
+                            ? "Femenino"
+                            : "Otro"
+                      }
+                      icon="male-female"
+                    />
+                  </Card>
+                </Animated.View>
+
+                {/* Fitness Info */}
+                <Animated.View entering={FadeInDown.delay(250)}>
+                  <Text className="text-white font-semibold text-lg mb-3">
+                    Configuración Fitness
+                  </Text>
+                  <Card className="mb-6">
+                    <ProfileItem
+                      label="Objetivo"
+                      value={getGoalLabel(profile?.goal)}
+                      icon="trophy"
+                      onEdit={() => handleEdit("goal", profile?.goal || "")}
+                    />
+                    <ProfileItem
+                      label="Nivel de Actividad"
+                      value={getActivityLabel(profile?.activity_level)}
+                      icon="fitness"
+                      onEdit={() =>
+                        handleEdit(
+                          "activity_level",
+                          profile?.activity_level || "",
+                        )
+                      }
+                    />
+                  </Card>
+                </Animated.View>
+
+                {/* Weight Progress */}
+                <Animated.View entering={FadeInDown.delay(300)}>
+                  <View className="flex-row items-center justify-between mb-3">
+                    <Text className="text-white font-semibold text-lg">
+                      Historial de Peso
+                    </Text>
+                    <TouchableOpacity
+                      onPress={() => setShowAddWeight(true)}
+                      className="bg-primary-500 px-3 py-1.5 rounded-lg flex-row items-center overflow-hidden"
+                    >
+                      <Ionicons name="add" size={16} color="#fff" />
+                      <Text className="text-white text-sm ml-1">Añadir</Text>
+                    </TouchableOpacity>
+                  </View>
+                  <Card>
+                    {weights.length === 0 ? (
+                      <Text className="text-slate-400 text-center py-4">
+                        No hay registros de peso
+                      </Text>
+                    ) : (
+                      <>
+                        {/* Chart */}
+                        {weights.length > 1 && (
+                          <View className="mb-6 -ml-4">
+                            <LineChart
+                              data={weights
+                                .slice()
+                                .reverse()
+                                .map((w) => ({
+                                  value: w.weight,
+                                  label: w.date,
+                                }))}
+                              color="#A855F7"
+                              thickness={3}
+                              dataPointsColor="#C084FC"
+                              textColor="gray"
+                              yAxisTextStyle={{ color: "gray" }}
+                              xAxisLabelTextStyle={{
+                                color: "gray",
+                                fontSize: 10,
+                              }}
+                              hideRules
+                              hideAxesAndRules
+                              curved
+                              adjustToWidth
+                              width={300} // This might need to be responsive or fixed for grid
+                              height={180}
+                              initialSpacing={20}
+                              spacing={60}
+                              isAnimated
+                            />
+                          </View>
+                        )}
+
+                        {/* List */}
+                        {weights.slice(0, 5).map((w, i) => (
+                          <View
+                            key={i}
+                            className={`flex-row justify-between py-3 ${
+                              i < Math.min(weights.length, 5) - 1
+                                ? "border-b border-surface-light"
+                                : ""
+                            }`}
+                          >
+                            <Text className="text-slate-400">{w.date}</Text>
+                            <Text className="text-white font-semibold">
+                              {w.weight} kg
+                            </Text>
+                          </View>
+                        ))}
+                      </>
                     )}
+                  </Card>
+                </Animated.View>
 
-                    {/* List */}
-                    {weights.slice(0, 5).map((w, i) => (
-                      <View
-                        key={i}
-                        className={`flex-row justify-between py-3 ${
-                          i < Math.min(weights.length, 5) - 1
-                            ? "border-b border-surface-light"
-                            : ""
-                        }`}
-                      >
-                        <Text className="text-slate-400">{w.date}</Text>
-                        <Text className="text-white font-semibold">
-                          {w.weight} kg
-                        </Text>
-                      </View>
-                    ))}
-                  </>
-                )}
-              </Card>
-            </Animated.View>
-
-            {/* Logout Button */}
-            <Animated.View entering={FadeInDown.delay(350)} className="mt-6">
-              <TouchableOpacity
-                onPress={() => {
-                  if (Platform.OS === "web") {
-                    if (window.confirm("¿Estás seguro de que quieres salir?")) {
-                      signOut();
-                    }
-                  } else {
-                    Alert.alert(
-                      "Cerrar Sesión",
-                      "¿Estás seguro de que quieres salir?",
-                      [
-                        { text: "Cancelar", style: "cancel" },
-                        {
-                          text: "Salir",
-                          style: "destructive",
-                          onPress: signOut,
-                        },
-                      ],
-                    );
-                  }
-                }}
-                className="bg-red-500/20 py-4 rounded-2xl flex-row items-center justify-center overflow-hidden"
-              >
-                <Ionicons name="log-out-outline" size={20} color="#EF4444" />
-                <Text className="text-red-500 font-semibold ml-2">
-                  Cerrar Sesión
-                </Text>
-              </TouchableOpacity>
-            </Animated.View>
+                {/* Mobile Logout Button (Hidden on Desktop) */}
+                <Animated.View
+                  entering={FadeInDown.delay(350)}
+                  className="mt-6 lg:hidden"
+                >
+                  <TouchableOpacity
+                    onPress={() => {
+                      if (Platform.OS === "web") {
+                        if (
+                          window.confirm("¿Estás seguro de que quieres salir?")
+                        ) {
+                          signOut();
+                        }
+                      } else {
+                        Alert.alert(
+                          "Cerrar Sesión",
+                          "¿Estás seguro de que quieres salir?",
+                          [
+                            { text: "Cancelar", style: "cancel" },
+                            {
+                              text: "Salir",
+                              style: "destructive",
+                              onPress: signOut,
+                            },
+                          ],
+                        );
+                      }
+                    }}
+                    className="bg-red-500/20 py-4 rounded-2xl flex-row items-center justify-center overflow-hidden"
+                  >
+                    <Ionicons
+                      name="log-out-outline"
+                      size={20}
+                      color="#EF4444"
+                    />
+                    <Text className="text-red-500 font-semibold ml-2">
+                      Cerrar Sesión
+                    </Text>
+                  </TouchableOpacity>
+                </Animated.View>
+              </View>
+            </View>
           </ScrollView>
 
           {/* Edit Modal */}
           <Modal visible={showEditModal} transparent animationType="fade">
             <View className="flex-1 bg-black/80 items-center justify-center px-6">
-              <View className="bg-surface w-full rounded-3xl p-6 overflow-hidden">
+              <View className="bg-surface w-full max-w-sm rounded-3xl p-6 overflow-hidden">
                 <Text className="text-white text-lg font-bold mb-4">
                   Editar{" "}
                   {editField === "full_name"
@@ -507,7 +585,7 @@ export default function ProfileScreen() {
           {/* Add Weight Modal */}
           <Modal visible={showAddWeight} transparent animationType="fade">
             <View className="flex-1 bg-black/80 items-center justify-center px-6">
-              <View className="bg-surface w-full rounded-3xl p-6 overflow-hidden">
+              <View className="bg-surface w-full max-w-sm rounded-3xl p-6 overflow-hidden">
                 <Text className="text-white text-lg font-bold mb-4">
                   Registrar Peso
                 </Text>

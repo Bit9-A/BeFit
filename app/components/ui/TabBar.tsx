@@ -146,14 +146,15 @@ const styles = StyleSheet.create({
   container: {
     position: "absolute",
     bottom: 25,
-    left: 20,
-    right: 20,
+    left: 0,
+    right: 0,
     alignItems: "center",
   },
   blurContainer: {
     borderRadius: 35,
     overflow: "hidden",
-    width: "100%",
+    width: "90%",
+    maxWidth: 500,
     borderWidth: 1,
     borderColor: "rgba(255,255,255,0.1)",
   },

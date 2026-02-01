@@ -294,7 +294,7 @@ export default function GymScreen() {
   return (
     <LinearGradient colors={["#09090b", "#18181b"]} className="flex-1">
       <SafeAreaView className="flex-1" edges={["top"]}>
-        <View className="flex-1 w-full max-w-md mx-auto">
+        <View className="flex-1 w-full lg:max-w-7xl mx-auto">
           <ScrollView
             className="flex-1 px-5"
             contentContainerStyle={{ paddingBottom: 120 }}
@@ -308,7 +308,7 @@ export default function GymScreen() {
             </Animated.View>
 
             {!routine ? (
-              <>
+              <View className="w-full max-w-md lg:max-w-2xl mx-auto">
                 {/* Generate Card */}
                 <Animated.View entering={FadeInDown.delay(200)}>
                   <LinearGradient
@@ -421,103 +421,129 @@ export default function GymScreen() {
                     </View>
                   </Card>
                 </Animated.View>
-              </>
+              </View>
             ) : (
-              <>
-                {/* Progress Bar */}
-                <Animated.View
-                  entering={FadeIn}
-                  className="bg-surface rounded-2xl p-4 mb-4 border border-surface-light"
-                >
-                  <View className="flex-row items-center justify-between mb-3">
-                    <Text className="text-white font-semibold">
-                      {routine.routineName}
-                    </Text>
-                    <Text className="text-primary-400 font-bold">
-                      {completedCount}/{totalCount}
-                    </Text>
-                  </View>
-                  <View className="h-3 bg-surface-light rounded-full overflow-hidden">
-                    <View
-                      className="h-full bg-accent-500 rounded-full"
-                      style={{ width: `${progress}%` }}
-                    />
-                  </View>
-                  {progress === 100 && (
-                    <Text className="text-accent-400 text-center mt-3 font-semibold">
-                      🎉 ¡Rutina Completada!
-                    </Text>
-                  )}
-                </Animated.View>
-
-                {/* AI Explanation - Short */}
-                <Animated.View
-                  entering={FadeInDown.delay(100)}
-                  className="bg-primary-500/10 rounded-xl p-3 mb-4 flex-row items-center"
-                >
-                  <Ionicons name="sparkles" size={16} color="#6366F1" />
-                  <Text
-                    className="text-slate-300 text-sm ml-2 flex-1"
-                    numberOfLines={2}
+              <View className="flex-col lg:flex-row lg:gap-8 lg:items-start">
+                {/* SIDEBAR (Progress & Settings) */}
+                <View className="lg:w-1/3 lg:sticky lg:top-4">
+                  {/* Progress Bar */}
+                  <Animated.View
+                    entering={FadeIn}
+                    className="bg-surface rounded-2xl p-4 mb-4 border border-surface-light"
                   >
-                    {routine.explanation.substring(0, 80)}...
-                  </Text>
-                </Animated.View>
+                    <View className="flex-row items-center justify-between mb-3">
+                      <Text className="text-white font-semibold">
+                        {routine.routineName}
+                      </Text>
+                      <Text className="text-primary-400 font-bold">
+                        {completedCount}/{totalCount}
+                      </Text>
+                    </View>
+                    <View className="h-3 bg-surface-light rounded-full overflow-hidden">
+                      <View
+                        className="h-full bg-accent-500 rounded-full"
+                        style={{ width: `${progress}%` }}
+                      />
+                    </View>
+                    {progress === 100 && (
+                      <Text className="text-accent-400 text-center mt-3 font-semibold">
+                        🎉 ¡Rutina Completada!
+                      </Text>
+                    )}
+                  </Animated.View>
 
-                {/* Rest Time Selector */}
-                <View className="flex-row items-center justify-between mb-4 bg-surface rounded-xl p-3">
-                  <Text className="text-slate-400">Descanso entre series:</Text>
-                  <View className="flex-row gap-2">
-                    {[60, 90, 120].map((time) => (
-                      <TouchableOpacity
-                        key={time}
-                        onPress={() => setRestTime(time)}
-                        className={`px-3 py-1.5 rounded-lg ${
-                          restTime === time
-                            ? "bg-primary-500"
-                            : "bg-surface-light"
-                        }`}
-                      >
-                        <Text
-                          className={
-                            restTime === time ? "text-white" : "text-slate-400"
-                          }
+                  {/* AI Explanation - Short */}
+                  <Animated.View
+                    entering={FadeInDown.delay(100)}
+                    className="bg-primary-500/10 rounded-xl p-3 mb-4 flex-row items-center"
+                  >
+                    <Ionicons name="sparkles" size={16} color="#6366F1" />
+                    <Text
+                      className="text-slate-300 text-sm ml-2 flex-1"
+                      numberOfLines={4}
+                    >
+                      {routine.explanation}
+                    </Text>
+                  </Animated.View>
+
+                  {/* Rest Time Selector */}
+                  <View className="flex-row items-center justify-between mb-4 bg-surface rounded-xl p-3">
+                    <Text className="text-slate-400">
+                      Descanso entre series:
+                    </Text>
+                    <View className="flex-row gap-2">
+                      {[60, 90, 120].map((time) => (
+                        <TouchableOpacity
+                          key={time}
+                          onPress={() => setRestTime(time)}
+                          className={`px-3 py-1.5 rounded-lg ${
+                            restTime === time
+                              ? "bg-primary-500"
+                              : "bg-surface-light"
+                          }`}
                         >
-                          {time}s
-                        </Text>
-                      </TouchableOpacity>
+                          <Text
+                            className={
+                              restTime === time
+                                ? "text-white"
+                                : "text-slate-400"
+                            }
+                          >
+                            {time}s
+                          </Text>
+                        </TouchableOpacity>
+                      ))}
+                    </View>
+                  </View>
+
+                  {/* New Routine Button (Mobile/Sidebar) */}
+                  <TouchableOpacity
+                    onPress={() => {
+                      setRoutine(null);
+                      setCompletedExercises(new Set());
+                    }}
+                    className="flex-row items-center justify-center py-4 mt-4 lg:hidden"
+                  >
+                    <Ionicons name="refresh" size={20} color="#6366F1" />
+                    <Text className="text-primary-500 font-semibold ml-2">
+                      Nueva Rutina
+                    </Text>
+                  </TouchableOpacity>
+                </View>
+
+                {/* MAIN CONTENT (Exercises) */}
+                <View className="flex-1">
+                  <View className="flex-row items-center justify-between mb-3">
+                    <Text className="text-white font-semibold">Ejercicios</Text>
+                    {/* Desktop New Routine Button */}
+                    <TouchableOpacity
+                      onPress={() => {
+                        setRoutine(null);
+                        setCompletedExercises(new Set());
+                      }}
+                      className="hidden lg:flex flex-row items-center"
+                    >
+                      <Ionicons name="refresh" size={16} color="#6366F1" />
+                      <Text className="text-primary-500 font-semibold ml-2 text-sm">
+                        Nueva
+                      </Text>
+                    </TouchableOpacity>
+                  </View>
+
+                  <View className="flex-row flex-wrap gap-4">
+                    {routine.exercises.map((exercise, index) => (
+                      <View key={index} className="w-full lg:w-[48%]">
+                        <ExerciseCard
+                          exercise={exercise}
+                          index={index}
+                          onStart={() => startExercise(index)}
+                          isCompleted={completedExercises.has(index)}
+                        />
+                      </View>
                     ))}
                   </View>
                 </View>
-
-                {/* Exercise List */}
-                <Text className="text-white font-semibold mb-3">
-                  Ejercicios
-                </Text>
-                {routine.exercises.map((exercise, index) => (
-                  <ExerciseCard
-                    key={index}
-                    exercise={exercise}
-                    index={index}
-                    onStart={() => startExercise(index)}
-                    isCompleted={completedExercises.has(index)}
-                  />
-                ))}
-
-                {/* New Routine Button */}
-                <TouchableOpacity
-                  onPress={() => {
-                    setRoutine(null);
-                    setCompletedExercises(new Set());
-                  }}
-                  className="flex-row items-center justify-center py-4 mt-4"
-                >
-                  <Ionicons name="refresh" size={20} color="#6366F1" />
-                  <Text className="text-primary-500 font-semibold ml-2">
-                    Nueva Rutina
-                  </Text>
-                </TouchableOpacity>
-              </>
+              </View>
             )}
           </ScrollView>
 

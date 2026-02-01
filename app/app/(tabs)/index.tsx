@@ -136,7 +136,7 @@ export default function DashboardScreen() {
   return (
     <LinearGradient colors={["#0F172A", "#1E293B"]} className="flex-1">
       <SafeAreaView className="flex-1" edges={["top"]}>
-        <View className="flex-1 w-full max-w-md mx-auto">
+        <View className="flex-1 w-full lg:max-w-6xl mx-auto">
           <ScrollView
             className="flex-1 px-5"
             contentContainerStyle={{ paddingBottom: 120 }}
@@ -180,45 +180,46 @@ export default function DashboardScreen() {
             {/* Daily Missions Widget (Replaces Goal Card) */}
             <DailyMissions />
 
-            {/* Metrics Grid */}
+            {/* Metrics Grid Container */}
             <Animated.View
               entering={FadeInDown.delay(200)}
-              className="flex-row gap-3 mb-6"
+              className="flex-col lg:flex-row gap-4 mb-6"
             >
-              <MetricCard
-                title="BMI"
-                value={metrics?.bmi || "--"}
-                subtitle={metrics?.status}
-                icon="analytics"
-                color="#6366F1"
-              />
-              <MetricCard
-                title="Peso"
-                value={latestWeight ? `${latestWeight} kg` : "--"}
-                subtitle="Último registro"
-                icon="scale"
-                color="#8B5CF6"
-              />
-            </Animated.View>
+              {/* Row 1 (BMI, Weight) */}
+              <View className="flex-1 flex-row gap-4">
+                <MetricCard
+                  title="BMI"
+                  value={metrics?.bmi || "--"}
+                  subtitle={metrics?.status || "Sin datos"}
+                  icon="analytics"
+                  color="#6366F1"
+                />
+                <MetricCard
+                  title="Peso"
+                  value={latestWeight ? `${latestWeight} kg` : "--"}
+                  subtitle="Último registro"
+                  icon="scale"
+                  color="#8B5CF6"
+                />
+              </View>
 
-            <Animated.View
-              entering={FadeInDown.delay(250)}
-              className="flex-row gap-3 mb-6"
-            >
-              <MetricCard
-                title="TMB"
-                value={metrics?.tmb ? `${metrics.tmb}` : "--"}
-                subtitle="kcal/día"
-                icon="flame"
-                color="#F97316"
-              />
-              <MetricCard
-                title="TDEE"
-                value={metrics?.tdee ? `${metrics.tdee}` : "--"}
-                subtitle="kcal necesarias"
-                icon="nutrition"
-                color="#10B981"
-              />
+              {/* Row 2 (TMB, TDEE) */}
+              <View className="flex-1 flex-row gap-4">
+                <MetricCard
+                  title="TMB"
+                  value={metrics?.tmb ? `${metrics.tmb}` : "--"}
+                  subtitle="kcal/día"
+                  icon="flame"
+                  color="#F97316"
+                />
+                <MetricCard
+                  title="TDEE"
+                  value={metrics?.tdee ? `${metrics.tdee}` : "--"}
+                  subtitle="kcal necesarias"
+                  icon="nutrition"
+                  color="#10B981"
+                />
+              </View>
             </Animated.View>
 
             {/* Quick Actions */}
