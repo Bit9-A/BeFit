@@ -8,7 +8,7 @@ const supabaseAnonKey = process.env.EXPO_PUBLIC_SUPABASE_ANON_KEY!;
 // Custom storage adapter that handles SSR
 const ExpoSecureStoreAdapter = {
   getItem: async (key: string): Promise<string | null> => {
-    if (typeof window === "undefined") {
+    if (Platform.OS === "web" && typeof window === "undefined") {
       return null;
     }
     try {
@@ -18,7 +18,7 @@ const ExpoSecureStoreAdapter = {
     }
   },
   setItem: async (key: string, value: string): Promise<void> => {
-    if (typeof window === "undefined") {
+    if (Platform.OS === "web" && typeof window === "undefined") {
       return;
     }
     try {
@@ -28,7 +28,7 @@ const ExpoSecureStoreAdapter = {
     }
   },
   removeItem: async (key: string): Promise<void> => {
-    if (typeof window === "undefined") {
+    if (Platform.OS === "web" && typeof window === "undefined") {
       return;
     }
     try {

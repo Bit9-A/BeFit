@@ -2,13 +2,13 @@ import React, { useState, useEffect, useRef } from "react";
 import {
   View,
   Text,
-  SafeAreaView,
   ScrollView,
   TouchableOpacity,
   Modal,
   Vibration,
   ActivityIndicator,
 } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 import { LinearGradient } from "expo-linear-gradient";
 import { Ionicons } from "@expo/vector-icons";
 import Animated, {
@@ -293,245 +293,253 @@ export default function GymScreen() {
 
   return (
     <LinearGradient colors={["#09090b", "#18181b"]} className="flex-1">
-      <SafeAreaView className="flex-1">
-        <ScrollView
-          className="flex-1 px-5"
-          contentContainerStyle={{ paddingBottom: 120 }}
-        >
-          {/* Header */}
-          <Animated.View entering={FadeInUp.delay(100)} className="mt-4 mb-6">
-            <Text className="text-3xl font-bold text-white">Smart Gym</Text>
-            <Text className="text-slate-400 mt-2">
-              Rutinas personalizadas con IA
-            </Text>
-          </Animated.View>
+      <SafeAreaView className="flex-1" edges={["top"]}>
+        <View className="flex-1 w-full max-w-md mx-auto">
+          <ScrollView
+            className="flex-1 px-5"
+            contentContainerStyle={{ paddingBottom: 120 }}
+          >
+            {/* Header */}
+            <Animated.View entering={FadeInUp.delay(100)} className="mt-4 mb-6">
+              <Text className="text-3xl font-bold text-white">Smart Gym</Text>
+              <Text className="text-slate-400 mt-2">
+                Rutinas personalizadas con IA
+              </Text>
+            </Animated.View>
 
-          {!routine ? (
-            <>
-              {/* Generate Card */}
-              <Animated.View entering={FadeInDown.delay(200)}>
-                <LinearGradient
-                  colors={["#6366F1", "#4F46E5"]}
-                  className="rounded-3xl p-6 mb-6 overflow-hidden"
-                >
-                  <View className="items-center">
-                    <View className="w-20 h-20 bg-white/20 rounded-3xl items-center justify-center mb-4 overflow-hidden">
-                      <Ionicons name="barbell" size={40} color="#fff" />
-                    </View>
-                    <Text className="text-white text-xl font-bold text-center">
-                      Genera tu Rutina del Día
-                    </Text>
-                    <Text className="text-white/70 text-center mt-2 mb-6">
-                      La IA creará una rutina basada en tu perfil
-                    </Text>
-                    <TouchableOpacity
-                      onPress={generateRoutine}
-                      disabled={loading}
-                      activeOpacity={0.9}
-                      className="w-full"
-                    >
-                      <LinearGradient
-                        colors={["#22D3EE", "#3B82F6"]}
-                        start={{ x: 0, y: 0 }}
-                        end={{ x: 1, y: 1 }}
-                        className="py-4 px-6 rounded-3xl flex-row items-center justify-center shadow-neon-cyan overflow-hidden"
-                      >
-                        {loading ? (
-                          <View className="flex-row items-center gap-3">
-                            <ActivityIndicator color="#fff" />
-                            <Text className="text-white text-lg font-bold">
-                              Diseñando tu plan...
-                            </Text>
-                          </View>
-                        ) : (
-                          <>
-                            <View className="bg-white/20 p-2 rounded-xl mr-3 overflow-hidden">
-                              <Ionicons name="flash" size={24} color="#fff" />
-                            </View>
-                            <View className="items-start">
-                              <Text className="text-white text-lg font-bold">
-                                Generar Rutina
-                              </Text>
-                              <Text className="text-indigo-200 text-xs">
-                                Potenciada por IA
-                              </Text>
-                            </View>
-                            <View className="flex-1" />
-                            <Ionicons
-                              name="arrow-forward"
-                              size={24}
-                              color="#fff"
-                            />
-                          </>
-                        )}
-                      </LinearGradient>
-                    </TouchableOpacity>
-
-                    {/* Loading Skeletons */}
-                    {loading && (
-                      <Animated.View
-                        entering={FadeInDown.delay(200)}
-                        className="mt-6 w-full"
-                      >
-                        <Skeleton height={20} width="60%" className="mb-3" />
-                        <Skeleton height={20} width="80%" className="mb-3" />
-                        <Skeleton height={20} width="40%" className="mb-6" />
-
-                        <View className="flex-row gap-3">
-                          <Skeleton height={80} width={80} borderRadius={16} />
-                          <View className="flex-1 gap-2">
-                            <Skeleton height={20} width="100%" />
-                            <Skeleton height={20} width="70%" />
-                          </View>
-                        </View>
-                      </Animated.View>
-                    )}
-                  </View>
-                </LinearGradient>
-              </Animated.View>
-
-              {/* Tips */}
-              <Animated.View entering={FadeInDown.delay(300)}>
-                <Card>
-                  <Text className="text-white font-semibold mb-3">
-                    Consejos para hoy
-                  </Text>
-                  <View className="flex-row items-center mb-2">
-                    <Ionicons name="water" size={18} color="#10B981" />
-                    <Text className="text-slate-400 ml-2">
-                      Hidrátate antes de entrenar
-                    </Text>
-                  </View>
-                  <View className="flex-row items-center mb-2">
-                    <Ionicons name="timer" size={18} color="#F97316" />
-                    <Text className="text-slate-400 ml-2">
-                      Descansa 60-90 segundos entre series
-                    </Text>
-                  </View>
-                  <View className="flex-row items-center">
-                    <Ionicons name="body" size={18} color="#8B5CF6" />
-                    <Text className="text-slate-400 ml-2">
-                      Mantén buena postura en cada ejercicio
-                    </Text>
-                  </View>
-                </Card>
-              </Animated.View>
-            </>
-          ) : (
-            <>
-              {/* Progress Bar */}
-              <Animated.View
-                entering={FadeIn}
-                className="bg-surface rounded-2xl p-4 mb-4 border border-surface-light"
-              >
-                <View className="flex-row items-center justify-between mb-3">
-                  <Text className="text-white font-semibold">
-                    {routine.routineName}
-                  </Text>
-                  <Text className="text-primary-400 font-bold">
-                    {completedCount}/{totalCount}
-                  </Text>
-                </View>
-                <View className="h-3 bg-surface-light rounded-full overflow-hidden">
-                  <View
-                    className="h-full bg-accent-500 rounded-full"
-                    style={{ width: `${progress}%` }}
-                  />
-                </View>
-                {progress === 100 && (
-                  <Text className="text-accent-400 text-center mt-3 font-semibold">
-                    🎉 ¡Rutina Completada!
-                  </Text>
-                )}
-              </Animated.View>
-
-              {/* AI Explanation - Short */}
-              <Animated.View
-                entering={FadeInDown.delay(100)}
-                className="bg-primary-500/10 rounded-xl p-3 mb-4 flex-row items-center"
-              >
-                <Ionicons name="sparkles" size={16} color="#6366F1" />
-                <Text
-                  className="text-slate-300 text-sm ml-2 flex-1"
-                  numberOfLines={2}
-                >
-                  {routine.explanation.substring(0, 80)}...
-                </Text>
-              </Animated.View>
-
-              {/* Rest Time Selector */}
-              <View className="flex-row items-center justify-between mb-4 bg-surface rounded-xl p-3">
-                <Text className="text-slate-400">Descanso entre series:</Text>
-                <View className="flex-row gap-2">
-                  {[60, 90, 120].map((time) => (
-                    <TouchableOpacity
-                      key={time}
-                      onPress={() => setRestTime(time)}
-                      className={`px-3 py-1.5 rounded-lg ${
-                        restTime === time
-                          ? "bg-primary-500"
-                          : "bg-surface-light"
-                      }`}
-                    >
-                      <Text
-                        className={
-                          restTime === time ? "text-white" : "text-slate-400"
-                        }
-                      >
-                        {time}s
+            {!routine ? (
+              <>
+                {/* Generate Card */}
+                <Animated.View entering={FadeInDown.delay(200)}>
+                  <LinearGradient
+                    colors={["#6366F1", "#4F46E5"]}
+                    className="rounded-3xl p-6 mb-6 overflow-hidden"
+                  >
+                    <View className="items-center">
+                      <View className="w-20 h-20 bg-white/20 rounded-3xl items-center justify-center mb-4 overflow-hidden">
+                        <Ionicons name="barbell" size={40} color="#fff" />
+                      </View>
+                      <Text className="text-white text-xl font-bold text-center">
+                        Genera tu Rutina del Día
                       </Text>
-                    </TouchableOpacity>
-                  ))}
+                      <Text className="text-white/70 text-center mt-2 mb-6">
+                        La IA creará una rutina basada en tu perfil
+                      </Text>
+                      <TouchableOpacity
+                        onPress={generateRoutine}
+                        disabled={loading}
+                        activeOpacity={0.9}
+                        className="w-full"
+                      >
+                        <LinearGradient
+                          colors={["#22D3EE", "#3B82F6"]}
+                          start={{ x: 0, y: 0 }}
+                          end={{ x: 1, y: 1 }}
+                          className="py-4 px-6 rounded-3xl flex-row items-center justify-center shadow-neon-cyan overflow-hidden"
+                        >
+                          {loading ? (
+                            <View className="flex-row items-center gap-3">
+                              <ActivityIndicator color="#fff" />
+                              <Text className="text-white text-lg font-bold">
+                                Diseñando tu plan...
+                              </Text>
+                            </View>
+                          ) : (
+                            <>
+                              <View className="bg-white/20 p-2 rounded-xl mr-3 overflow-hidden">
+                                <Ionicons name="flash" size={24} color="#fff" />
+                              </View>
+                              <View className="items-start">
+                                <Text className="text-white text-lg font-bold">
+                                  Generar Rutina
+                                </Text>
+                                <Text className="text-indigo-200 text-xs">
+                                  Potenciada por IA
+                                </Text>
+                              </View>
+                              <View className="flex-1" />
+                              <Ionicons
+                                name="arrow-forward"
+                                size={24}
+                                color="#fff"
+                              />
+                            </>
+                          )}
+                        </LinearGradient>
+                      </TouchableOpacity>
+
+                      {/* Loading Skeletons */}
+                      {loading && (
+                        <Animated.View
+                          entering={FadeInDown.delay(200)}
+                          className="mt-6 w-full"
+                        >
+                          <Skeleton height={20} width="60%" className="mb-3" />
+                          <Skeleton height={20} width="80%" className="mb-3" />
+                          <Skeleton height={20} width="40%" className="mb-6" />
+
+                          <View className="flex-row gap-3">
+                            <Skeleton
+                              height={80}
+                              width={80}
+                              borderRadius={16}
+                            />
+                            <View className="flex-1 gap-2">
+                              <Skeleton height={20} width="100%" />
+                              <Skeleton height={20} width="70%" />
+                            </View>
+                          </View>
+                        </Animated.View>
+                      )}
+                    </View>
+                  </LinearGradient>
+                </Animated.View>
+
+                {/* Tips */}
+                <Animated.View entering={FadeInDown.delay(300)}>
+                  <Card>
+                    <Text className="text-white font-semibold mb-3">
+                      Consejos para hoy
+                    </Text>
+                    <View className="flex-row items-center mb-2">
+                      <Ionicons name="water" size={18} color="#10B981" />
+                      <Text className="text-slate-400 ml-2">
+                        Hidrátate antes de entrenar
+                      </Text>
+                    </View>
+                    <View className="flex-row items-center mb-2">
+                      <Ionicons name="timer" size={18} color="#F97316" />
+                      <Text className="text-slate-400 ml-2">
+                        Descansa 60-90 segundos entre series
+                      </Text>
+                    </View>
+                    <View className="flex-row items-center">
+                      <Ionicons name="body" size={18} color="#8B5CF6" />
+                      <Text className="text-slate-400 ml-2">
+                        Mantén buena postura en cada ejercicio
+                      </Text>
+                    </View>
+                  </Card>
+                </Animated.View>
+              </>
+            ) : (
+              <>
+                {/* Progress Bar */}
+                <Animated.View
+                  entering={FadeIn}
+                  className="bg-surface rounded-2xl p-4 mb-4 border border-surface-light"
+                >
+                  <View className="flex-row items-center justify-between mb-3">
+                    <Text className="text-white font-semibold">
+                      {routine.routineName}
+                    </Text>
+                    <Text className="text-primary-400 font-bold">
+                      {completedCount}/{totalCount}
+                    </Text>
+                  </View>
+                  <View className="h-3 bg-surface-light rounded-full overflow-hidden">
+                    <View
+                      className="h-full bg-accent-500 rounded-full"
+                      style={{ width: `${progress}%` }}
+                    />
+                  </View>
+                  {progress === 100 && (
+                    <Text className="text-accent-400 text-center mt-3 font-semibold">
+                      🎉 ¡Rutina Completada!
+                    </Text>
+                  )}
+                </Animated.View>
+
+                {/* AI Explanation - Short */}
+                <Animated.View
+                  entering={FadeInDown.delay(100)}
+                  className="bg-primary-500/10 rounded-xl p-3 mb-4 flex-row items-center"
+                >
+                  <Ionicons name="sparkles" size={16} color="#6366F1" />
+                  <Text
+                    className="text-slate-300 text-sm ml-2 flex-1"
+                    numberOfLines={2}
+                  >
+                    {routine.explanation.substring(0, 80)}...
+                  </Text>
+                </Animated.View>
+
+                {/* Rest Time Selector */}
+                <View className="flex-row items-center justify-between mb-4 bg-surface rounded-xl p-3">
+                  <Text className="text-slate-400">Descanso entre series:</Text>
+                  <View className="flex-row gap-2">
+                    {[60, 90, 120].map((time) => (
+                      <TouchableOpacity
+                        key={time}
+                        onPress={() => setRestTime(time)}
+                        className={`px-3 py-1.5 rounded-lg ${
+                          restTime === time
+                            ? "bg-primary-500"
+                            : "bg-surface-light"
+                        }`}
+                      >
+                        <Text
+                          className={
+                            restTime === time ? "text-white" : "text-slate-400"
+                          }
+                        >
+                          {time}s
+                        </Text>
+                      </TouchableOpacity>
+                    ))}
+                  </View>
                 </View>
-              </View>
 
-              {/* Exercise List */}
-              <Text className="text-white font-semibold mb-3">Ejercicios</Text>
-              {routine.exercises.map((exercise, index) => (
-                <ExerciseCard
-                  key={index}
-                  exercise={exercise}
-                  index={index}
-                  onStart={() => startExercise(index)}
-                  isCompleted={completedExercises.has(index)}
-                />
-              ))}
-
-              {/* New Routine Button */}
-              <TouchableOpacity
-                onPress={() => {
-                  setRoutine(null);
-                  setCompletedExercises(new Set());
-                }}
-                className="flex-row items-center justify-center py-4 mt-4"
-              >
-                <Ionicons name="refresh" size={20} color="#6366F1" />
-                <Text className="text-primary-500 font-semibold ml-2">
-                  Nueva Rutina
+                {/* Exercise List */}
+                <Text className="text-white font-semibold mb-3">
+                  Ejercicios
                 </Text>
-              </TouchableOpacity>
-            </>
-          )}
-        </ScrollView>
+                {routine.exercises.map((exercise, index) => (
+                  <ExerciseCard
+                    key={index}
+                    exercise={exercise}
+                    index={index}
+                    onStart={() => startExercise(index)}
+                    isCompleted={completedExercises.has(index)}
+                  />
+                ))}
 
-        {/* Focus Timer (Zen Mode) */}
-        <FocusTimer
-          visible={showExerciseTimer}
-          exercise={currentExercise}
-          currentSet={currentSet}
-          totalSets={parseInt(currentExercise?.sets || "3")}
-          onComplete={handleExerciseSkip}
-          onRest={handleSetComplete}
-          onClose={() => setShowExerciseTimer(false)}
-        />
+                {/* New Routine Button */}
+                <TouchableOpacity
+                  onPress={() => {
+                    setRoutine(null);
+                    setCompletedExercises(new Set());
+                  }}
+                  className="flex-row items-center justify-center py-4 mt-4"
+                >
+                  <Ionicons name="refresh" size={20} color="#6366F1" />
+                  <Text className="text-primary-500 font-semibold ml-2">
+                    Nueva Rutina
+                  </Text>
+                </TouchableOpacity>
+              </>
+            )}
+          </ScrollView>
 
-        {/* Rest Timer Modal */}
-        <RestTimerModal
-          visible={showRestTimer}
-          restTime={restTime}
-          onSkip={handleRestComplete}
-          onComplete={handleRestComplete}
-        />
+          {/* Focus Timer (Zen Mode) */}
+          <FocusTimer
+            visible={showExerciseTimer}
+            exercise={currentExercise}
+            currentSet={currentSet}
+            totalSets={parseInt(currentExercise?.sets || "3")}
+            onComplete={handleExerciseSkip}
+            onRest={handleSetComplete}
+            onClose={() => setShowExerciseTimer(false)}
+          />
+
+          {/* Rest Timer Modal */}
+          <RestTimerModal
+            visible={showRestTimer}
+            restTime={restTime}
+            onSkip={handleRestComplete}
+            onComplete={handleRestComplete}
+          />
+        </View>
       </SafeAreaView>
     </LinearGradient>
   );

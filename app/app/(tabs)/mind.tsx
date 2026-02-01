@@ -2,7 +2,6 @@ import React, { useState, useRef, useEffect } from "react";
 import {
   View,
   Text,
-  SafeAreaView,
   ScrollView,
   TouchableOpacity,
   TextInput,
@@ -10,6 +9,7 @@ import {
   Platform,
   FlatList,
 } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 import { LinearGradient } from "expo-linear-gradient";
 import { Ionicons } from "@expo/vector-icons";
 import Animated, {
@@ -256,127 +256,133 @@ export default function MindScreen() {
 
   return (
     <LinearGradient colors={["#0F172A", "#1E293B"]} className="flex-1">
-      <SafeAreaView className="flex-1">
-        {/* Header */}
-        <Animated.View
-          entering={FadeInUp.delay(100)}
-          className="px-5 mt-4 mb-4"
-        >
-          <Text className="text-3xl font-bold text-white">
-            Santuario Mental
-          </Text>
-          <Text className="text-slate-400 mt-2">
-            Tu espacio de bienestar y reflexión
-          </Text>
-        </Animated.View>
-
-        {/* Tab Switcher */}
-        <View className="flex-row mx-5 mb-4 bg-surface rounded-2xl p-1.5 overflow-hidden">
-          <TouchableOpacity
-            onPress={() => setActiveTab("chat")}
-            className={`flex-1 py-3 rounded-xl ${activeTab === "chat" ? "bg-primary-500" : ""}`}
+      <SafeAreaView className="flex-1" edges={["top"]}>
+        <View className="flex-1 w-full max-w-md mx-auto">
+          {/* Header */}
+          <Animated.View
+            entering={FadeInUp.delay(100)}
+            className="px-5 mt-4 mb-4"
           >
-            <Text
-              className={`text-center font-semibold ${activeTab === "chat" ? "text-white" : "text-slate-400"}`}
-            >
-              Diario
+            <Text className="text-3xl font-bold text-white">
+              Santuario Mental
             </Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            onPress={() => setActiveTab("feed")}
-            className={`flex-1 py-3 rounded-xl overflow-hidden ${activeTab === "feed" ? "bg-primary-500" : ""}`}
-          >
-            <Text
-              className={`text-center font-semibold ${activeTab === "feed" ? "text-white" : "text-slate-400"}`}
-            >
-              Feed
+            <Text className="text-slate-400 mt-2">
+              Tu espacio de bienestar y reflexión
             </Text>
-          </TouchableOpacity>
-        </View>
+          </Animated.View>
 
-        {activeTab === "chat" ? (
-          <KeyboardAvoidingView
-            behavior={Platform.OS === "ios" ? "padding" : "height"}
-            className="flex-1"
-            keyboardVerticalOffset={100}
-          >
-            {/* Messages */}
-            <ScrollView
-              ref={scrollViewRef}
-              className="flex-1 px-5"
-              contentContainerStyle={{ paddingBottom: 20 }}
-              onContentSizeChange={() => scrollViewRef.current?.scrollToEnd()}
-            >
-              {messages.map((message, index) => (
-                <ChatBubble
-                  key={index}
-                  message={message}
-                  isLast={index === messages.length - 1}
-                />
-              ))}
-              {sending && (
-                <View className="items-start mb-3">
-                  <View className="bg-surface border border-surface-light rounded-2xl rounded-bl-md px-4 py-3 overflow-hidden">
-                    <Text className="text-slate-400">Escribiendo...</Text>
-                  </View>
-                </View>
-              )}
-            </ScrollView>
-
-            {/* Input */}
-            <View className="px-5 pb-28">
-              <View className="flex-row items-end bg-surface rounded-2xl border border-surface-light overflow-hidden">
-                <TextInput
-                  value={inputText}
-                  onChangeText={setInputText}
-                  placeholder="Escribe cómo te sientes..."
-                  placeholderTextColor="#64748B"
-                  multiline
-                  maxLength={500}
-                  className="flex-1 px-4 py-3 text-white max-h-24"
-                />
-                <TouchableOpacity
-                  onPress={sendMessage}
-                  disabled={!inputText.trim() || sending}
-                  className={`m-2 w-10 h-10 rounded-xl overflow-hidden items-center justify-center ${
-                    inputText.trim() ? "bg-primary-500" : "bg-surface-light"
-                  }`}
-                >
-                  <Ionicons
-                    name="send"
-                    size={18}
-                    color={inputText.trim() ? "#fff" : "#64748B"}
-                  />
-                </TouchableOpacity>
-              </View>
-            </View>
-          </KeyboardAvoidingView>
-        ) : (
-          <ScrollView
-            className="flex-1 px-5"
-            contentContainerStyle={{ paddingBottom: 120 }}
-          >
-            {loadingFeed ? (
-              <View className="items-center py-10">
-                <Text className="text-slate-400">Cargando contenido...</Text>
-              </View>
-            ) : (
-              feedCards.map((card, index) => (
-                <WellnessCardComponent key={index} card={card} index={index} />
-              ))
-            )}
-
+          {/* Tab Switcher */}
+          <View className="flex-row mx-5 mb-4 bg-surface rounded-2xl p-1.5 overflow-hidden">
             <TouchableOpacity
-              onPress={loadFeed}
-              className="flex-row items-center justify-center py-4"
+              onPress={() => setActiveTab("chat")}
+              className={`flex-1 py-3 rounded-xl ${activeTab === "chat" ? "bg-primary-500" : ""}`}
             >
-              <Ionicons name="refresh" size={20} color="#6366F1" />
-              <Text className="text-primary-500 font-semibold ml-2">
-                Cargar más contenido
+              <Text
+                className={`text-center font-semibold ${activeTab === "chat" ? "text-white" : "text-slate-400"}`}
+              >
+                Diario
               </Text>
             </TouchableOpacity>
-          </ScrollView>
-        )}
+            <TouchableOpacity
+              onPress={() => setActiveTab("feed")}
+              className={`flex-1 py-3 rounded-xl overflow-hidden ${activeTab === "feed" ? "bg-primary-500" : ""}`}
+            >
+              <Text
+                className={`text-center font-semibold ${activeTab === "feed" ? "text-white" : "text-slate-400"}`}
+              >
+                Feed
+              </Text>
+            </TouchableOpacity>
+          </View>
+
+          {activeTab === "chat" ? (
+            <KeyboardAvoidingView
+              behavior={Platform.OS === "ios" ? "padding" : "height"}
+              className="flex-1"
+              keyboardVerticalOffset={100}
+            >
+              {/* Messages */}
+              <ScrollView
+                ref={scrollViewRef}
+                className="flex-1 px-5"
+                contentContainerStyle={{ paddingBottom: 20 }}
+                onContentSizeChange={() => scrollViewRef.current?.scrollToEnd()}
+              >
+                {messages.map((message, index) => (
+                  <ChatBubble
+                    key={index}
+                    message={message}
+                    isLast={index === messages.length - 1}
+                  />
+                ))}
+                {sending && (
+                  <View className="items-start mb-3">
+                    <View className="bg-surface border border-surface-light rounded-2xl rounded-bl-md px-4 py-3 overflow-hidden">
+                      <Text className="text-slate-400">Escribiendo...</Text>
+                    </View>
+                  </View>
+                )}
+              </ScrollView>
+
+              {/* Input */}
+              <View className="px-5 pb-28">
+                <View className="flex-row items-end bg-surface rounded-2xl border border-surface-light overflow-hidden">
+                  <TextInput
+                    value={inputText}
+                    onChangeText={setInputText}
+                    placeholder="Escribe cómo te sientes..."
+                    placeholderTextColor="#64748B"
+                    multiline
+                    maxLength={500}
+                    className="flex-1 px-4 py-3 text-white max-h-24"
+                  />
+                  <TouchableOpacity
+                    onPress={sendMessage}
+                    disabled={!inputText.trim() || sending}
+                    className={`m-2 w-10 h-10 rounded-xl overflow-hidden items-center justify-center ${
+                      inputText.trim() ? "bg-primary-500" : "bg-surface-light"
+                    }`}
+                  >
+                    <Ionicons
+                      name="send"
+                      size={18}
+                      color={inputText.trim() ? "#fff" : "#64748B"}
+                    />
+                  </TouchableOpacity>
+                </View>
+              </View>
+            </KeyboardAvoidingView>
+          ) : (
+            <ScrollView
+              className="flex-1 px-5"
+              contentContainerStyle={{ paddingBottom: 120 }}
+            >
+              {loadingFeed ? (
+                <View className="items-center py-10">
+                  <Text className="text-slate-400">Cargando contenido...</Text>
+                </View>
+              ) : (
+                feedCards.map((card, index) => (
+                  <WellnessCardComponent
+                    key={index}
+                    card={card}
+                    index={index}
+                  />
+                ))
+              )}
+
+              <TouchableOpacity
+                onPress={loadFeed}
+                className="flex-row items-center justify-center py-4"
+              >
+                <Ionicons name="refresh" size={20} color="#6366F1" />
+                <Text className="text-primary-500 font-semibold ml-2">
+                  Cargar más contenido
+                </Text>
+              </TouchableOpacity>
+            </ScrollView>
+          )}
+        </View>
       </SafeAreaView>
     </LinearGradient>
   );

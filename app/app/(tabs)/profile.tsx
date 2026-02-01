@@ -2,13 +2,13 @@ import React, { useState, useEffect } from "react";
 import {
   View,
   Text,
-  SafeAreaView,
   ScrollView,
   TouchableOpacity,
   Alert,
   Modal,
   Platform,
 } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 import { LinearGradient } from "expo-linear-gradient";
 import { Ionicons } from "@expo/vector-icons";
 import Animated, { FadeInDown, FadeInUp } from "react-native-reanimated";
@@ -201,328 +201,344 @@ export default function ProfileScreen() {
 
   return (
     <LinearGradient colors={["#09090b", "#18181b"]} className="flex-1">
-      <SafeAreaView className="flex-1">
-        <ScrollView
-          className="flex-1 px-5"
-          contentContainerStyle={{ paddingBottom: 120 }}
-        >
-          {/* Header */}
-          <Animated.View entering={FadeInUp.delay(100)} className="mt-4 mb-6">
-            <Text className="text-3xl font-bold text-white">Mi Perfil</Text>
-            <Text className="text-slate-400 mt-2">
-              Gestiona tu información personal
-            </Text>
-          </Animated.View>
-
-          {/* Profile Card */}
-          <Animated.View entering={FadeInDown.delay(150)}>
-            <LinearGradient
-              colors={["#A855F7", "#7E22CE"]}
-              className="rounded-3xl p-6 mb-6 items-center overflow-hidden"
-            >
-              <View className="w-20 h-20 bg-white/20 rounded-full items-center justify-center mb-3 overflow-hidden">
-                <Text className="text-white text-3xl font-bold">
-                  {profile?.full_name?.charAt(0)?.toUpperCase() || "U"}
-                </Text>
-              </View>
-              <Text className="text-white text-xl font-bold">
-                {profile?.full_name || "Usuario"}
+      <SafeAreaView className="flex-1" edges={["top"]}>
+        <View className="flex-1 w-full max-w-md mx-auto">
+          <ScrollView
+            className="flex-1 px-5"
+            contentContainerStyle={{ paddingBottom: 120 }}
+          >
+            {/* Header */}
+            <Animated.View entering={FadeInUp.delay(100)} className="mt-4 mb-6">
+              <Text className="text-3xl font-bold text-white">Mi Perfil</Text>
+              <Text className="text-slate-400 mt-2">
+                Gestiona tu información personal
               </Text>
-              <Text className="text-white/70">{user?.email}</Text>
-            </LinearGradient>
-          </Animated.View>
+            </Animated.View>
 
-          {/* Personal Info */}
-          <Animated.View entering={FadeInDown.delay(200)}>
-            <Text className="text-white font-semibold text-lg mb-3">
-              Información Personal
-            </Text>
-            <Card className="mb-6">
-              <ProfileItem
-                label="Nombre"
-                value={profile?.full_name || ""}
-                icon="person"
-                onEdit={() => handleEdit("full_name", profile?.full_name || "")}
-              />
-              <ProfileItem
-                label="Altura"
-                value={profile?.height ? `${profile.height} cm` : ""}
-                icon="resize-outline"
-                onEdit={() =>
-                  handleEdit("height", profile?.height?.toString() || "")
-                }
-              />
-              <ProfileItem
-                label="Edad"
-                value={calculateAge(profile?.birth_date)}
-                icon="calendar"
-              />
-              <ProfileItem
-                label="Género"
-                value={
-                  profile?.gender === "male"
-                    ? "Masculino"
-                    : profile?.gender === "female"
-                      ? "Femenino"
-                      : "Otro"
-                }
-                icon="male-female"
-              />
-            </Card>
-          </Animated.View>
-
-          {/* Fitness Info */}
-          <Animated.View entering={FadeInDown.delay(250)}>
-            <Text className="text-white font-semibold text-lg mb-3">
-              Configuración Fitness
-            </Text>
-            <Card className="mb-6">
-              <ProfileItem
-                label="Objetivo"
-                value={getGoalLabel(profile?.goal)}
-                icon="trophy"
-                onEdit={() => handleEdit("goal", profile?.goal || "")}
-              />
-              <ProfileItem
-                label="Nivel de Actividad"
-                value={getActivityLabel(profile?.activity_level)}
-                icon="fitness"
-                onEdit={() =>
-                  handleEdit("activity_level", profile?.activity_level || "")
-                }
-              />
-            </Card>
-          </Animated.View>
-
-          {/* Weight Progress */}
-          <Animated.View entering={FadeInDown.delay(300)}>
-            <View className="flex-row items-center justify-between mb-3">
-              <Text className="text-white font-semibold text-lg">
-                Historial de Peso
-              </Text>
-              <TouchableOpacity
-                onPress={() => setShowAddWeight(true)}
-                className="bg-primary-500 px-3 py-1.5 rounded-lg flex-row items-center overflow-hidden"
+            {/* Profile Card */}
+            <Animated.View entering={FadeInDown.delay(150)}>
+              <LinearGradient
+                colors={["#A855F7", "#7E22CE"]}
+                className="rounded-3xl p-6 mb-6 items-center overflow-hidden"
               >
-                <Ionicons name="add" size={16} color="#fff" />
-                <Text className="text-white text-sm ml-1">Añadir</Text>
-              </TouchableOpacity>
-            </View>
-            <Card>
-              {weights.length === 0 ? (
-                <Text className="text-slate-400 text-center py-4">
-                  No hay registros de peso
+                <View className="w-20 h-20 bg-white/20 rounded-full items-center justify-center mb-3 overflow-hidden">
+                  <Text className="text-white text-3xl font-bold">
+                    {profile?.full_name?.charAt(0)?.toUpperCase() || "U"}
+                  </Text>
+                </View>
+                <Text className="text-white text-xl font-bold">
+                  {profile?.full_name || "Usuario"}
                 </Text>
-              ) : (
-                <>
-                  {/* Chart */}
-                  {weights.length > 1 && (
-                    <View className="mb-6 -ml-4">
-                      <LineChart
-                        data={weights
-                          .slice()
-                          .reverse()
-                          .map((w) => ({ value: w.weight, label: w.date }))}
-                        color="#A855F7"
-                        thickness={3}
-                        dataPointsColor="#C084FC"
-                        textColor="gray"
-                        yAxisTextStyle={{ color: "gray" }}
-                        xAxisLabelTextStyle={{ color: "gray", fontSize: 10 }}
-                        hideRules
-                        hideAxesAndRules
-                        curved
-                        adjustToWidth
-                        width={300}
-                        height={180}
-                        initialSpacing={20}
-                        spacing={60}
-                        isAnimated
-                      />
-                    </View>
-                  )}
+                <Text className="text-white/70">{user?.email}</Text>
+              </LinearGradient>
+            </Animated.View>
 
-                  {/* List */}
-                  {weights.slice(0, 5).map((w, i) => (
-                    <View
-                      key={i}
-                      className={`flex-row justify-between py-3 ${
-                        i < Math.min(weights.length, 5) - 1
-                          ? "border-b border-surface-light"
-                          : ""
-                      }`}
-                    >
-                      <Text className="text-slate-400">{w.date}</Text>
-                      <Text className="text-white font-semibold">
-                        {w.weight} kg
-                      </Text>
-                    </View>
-                  ))}
-                </>
-              )}
-            </Card>
-          </Animated.View>
-
-          {/* Logout Button */}
-          <Animated.View entering={FadeInDown.delay(350)} className="mt-6">
-            <TouchableOpacity
-              onPress={() => {
-                if (Platform.OS === "web") {
-                  if (window.confirm("¿Estás seguro de que quieres salir?")) {
-                    signOut();
-                  }
-                } else {
-                  Alert.alert(
-                    "Cerrar Sesión",
-                    "¿Estás seguro de que quieres salir?",
-                    [
-                      { text: "Cancelar", style: "cancel" },
-                      { text: "Salir", style: "destructive", onPress: signOut },
-                    ],
-                  );
-                }
-              }}
-              className="bg-red-500/20 py-4 rounded-2xl flex-row items-center justify-center overflow-hidden"
-            >
-              <Ionicons name="log-out-outline" size={20} color="#EF4444" />
-              <Text className="text-red-500 font-semibold ml-2">
-                Cerrar Sesión
+            {/* Personal Info */}
+            <Animated.View entering={FadeInDown.delay(200)}>
+              <Text className="text-white font-semibold text-lg mb-3">
+                Información Personal
               </Text>
-            </TouchableOpacity>
-          </Animated.View>
-        </ScrollView>
-
-        {/* Edit Modal */}
-        <Modal visible={showEditModal} transparent animationType="fade">
-          <View className="flex-1 bg-black/80 items-center justify-center px-6">
-            <View className="bg-surface w-full rounded-3xl p-6 overflow-hidden">
-              <Text className="text-white text-lg font-bold mb-4">
-                Editar{" "}
-                {editField === "full_name"
-                  ? "Nombre"
-                  : editField === "height"
-                    ? "Altura"
-                    : editField === "goal"
-                      ? "Objetivo"
-                      : "Actividad"}
-              </Text>
-
-              {editField === "goal" ? (
-                <View className="gap-2 mb-4">
-                  {["muscle_gain", "weight_loss", "maintenance"].map((goal) => (
-                    <TouchableOpacity
-                      key={goal}
-                      onPress={() => setEditValue(goal)}
-                      className={`py-4 px-4 rounded-xl border overflow-hidden ${
-                        editValue === goal
-                          ? "bg-primary-500/20 border-primary-500"
-                          : "bg-surface-light border-surface-light"
-                      }`}
-                    >
-                      <Text
-                        className={
-                          editValue === goal ? "text-white" : "text-slate-400"
-                        }
-                      >
-                        {getGoalLabel(goal)}
-                      </Text>
-                    </TouchableOpacity>
-                  ))}
-                </View>
-              ) : editField === "activity_level" ? (
-                <View className="gap-2 mb-4">
-                  {[
-                    "sedentary",
-                    "light",
-                    "moderate",
-                    "active",
-                    "very_active",
-                  ].map((level) => (
-                    <TouchableOpacity
-                      key={level}
-                      onPress={() => setEditValue(level)}
-                      className={`py-3 px-4 rounded-xl border overflow-hidden ${
-                        editValue === level
-                          ? "bg-primary-500/20 border-primary-500"
-                          : "bg-surface-light border-surface-light"
-                      }`}
-                    >
-                      <Text
-                        className={
-                          editValue === level ? "text-white" : "text-slate-400"
-                        }
-                      >
-                        {getActivityLabel(level)}
-                      </Text>
-                    </TouchableOpacity>
-                  ))}
-                </View>
-              ) : (
-                <Input
-                  value={editValue}
-                  onChangeText={setEditValue}
-                  placeholder={
-                    editField === "height" ? "Ej: 170" : "Ingresa valor"
+              <Card className="mb-6">
+                <ProfileItem
+                  label="Nombre"
+                  value={profile?.full_name || ""}
+                  icon="person"
+                  onEdit={() =>
+                    handleEdit("full_name", profile?.full_name || "")
                   }
-                  keyboardType={editField === "height" ? "numeric" : "default"}
                 />
-              )}
+                <ProfileItem
+                  label="Altura"
+                  value={profile?.height ? `${profile.height} cm` : ""}
+                  icon="resize-outline"
+                  onEdit={() =>
+                    handleEdit("height", profile?.height?.toString() || "")
+                  }
+                />
+                <ProfileItem
+                  label="Edad"
+                  value={calculateAge(profile?.birth_date)}
+                  icon="calendar"
+                />
+                <ProfileItem
+                  label="Género"
+                  value={
+                    profile?.gender === "male"
+                      ? "Masculino"
+                      : profile?.gender === "female"
+                        ? "Femenino"
+                        : "Otro"
+                  }
+                  icon="male-female"
+                />
+              </Card>
+            </Animated.View>
 
-              <View className="flex-row gap-3 mt-4">
-                <TouchableOpacity
-                  onPress={() => setShowEditModal(false)}
-                  className="flex-1 py-3 bg-surface-light rounded-xl items-center overflow-hidden"
-                >
-                  <Text className="text-slate-400 font-medium">Cancelar</Text>
-                </TouchableOpacity>
-                <TouchableOpacity
-                  onPress={saveEdit}
-                  disabled={saving}
-                  className="flex-1 py-3 bg-primary-500 rounded-xl items-center overflow-hidden"
-                >
-                  <Text className="text-white font-medium">
-                    {saving ? "Guardando..." : "Guardar"}
-                  </Text>
-                </TouchableOpacity>
-              </View>
-            </View>
-          </View>
-        </Modal>
-
-        {/* Add Weight Modal */}
-        <Modal visible={showAddWeight} transparent animationType="fade">
-          <View className="flex-1 bg-black/80 items-center justify-center px-6">
-            <View className="bg-surface w-full rounded-3xl p-6 overflow-hidden">
-              <Text className="text-white text-lg font-bold mb-4">
-                Registrar Peso
+            {/* Fitness Info */}
+            <Animated.View entering={FadeInDown.delay(250)}>
+              <Text className="text-white font-semibold text-lg mb-3">
+                Configuración Fitness
               </Text>
-              <Input
-                value={newWeight}
-                onChangeText={setNewWeight}
-                placeholder="Ej: 75.5"
-                keyboardType="numeric"
-                icon="scale-outline"
-              />
-              <View className="flex-row gap-3 mt-4">
+              <Card className="mb-6">
+                <ProfileItem
+                  label="Objetivo"
+                  value={getGoalLabel(profile?.goal)}
+                  icon="trophy"
+                  onEdit={() => handleEdit("goal", profile?.goal || "")}
+                />
+                <ProfileItem
+                  label="Nivel de Actividad"
+                  value={getActivityLabel(profile?.activity_level)}
+                  icon="fitness"
+                  onEdit={() =>
+                    handleEdit("activity_level", profile?.activity_level || "")
+                  }
+                />
+              </Card>
+            </Animated.View>
+
+            {/* Weight Progress */}
+            <Animated.View entering={FadeInDown.delay(300)}>
+              <View className="flex-row items-center justify-between mb-3">
+                <Text className="text-white font-semibold text-lg">
+                  Historial de Peso
+                </Text>
                 <TouchableOpacity
-                  onPress={() => setShowAddWeight(false)}
-                  className="flex-1 py-3 bg-surface-light rounded-xl items-center overflow-hidden"
+                  onPress={() => setShowAddWeight(true)}
+                  className="bg-primary-500 px-3 py-1.5 rounded-lg flex-row items-center overflow-hidden"
                 >
-                  <Text className="text-slate-400 font-medium">Cancelar</Text>
-                </TouchableOpacity>
-                <TouchableOpacity
-                  onPress={addWeight}
-                  disabled={saving || !newWeight}
-                  className="flex-1 py-3 bg-accent-500 rounded-xl items-center overflow-hidden"
-                >
-                  <Text className="text-white font-medium">
-                    {saving ? "Guardando..." : "Guardar"}
-                  </Text>
+                  <Ionicons name="add" size={16} color="#fff" />
+                  <Text className="text-white text-sm ml-1">Añadir</Text>
                 </TouchableOpacity>
               </View>
+              <Card>
+                {weights.length === 0 ? (
+                  <Text className="text-slate-400 text-center py-4">
+                    No hay registros de peso
+                  </Text>
+                ) : (
+                  <>
+                    {/* Chart */}
+                    {weights.length > 1 && (
+                      <View className="mb-6 -ml-4">
+                        <LineChart
+                          data={weights
+                            .slice()
+                            .reverse()
+                            .map((w) => ({ value: w.weight, label: w.date }))}
+                          color="#A855F7"
+                          thickness={3}
+                          dataPointsColor="#C084FC"
+                          textColor="gray"
+                          yAxisTextStyle={{ color: "gray" }}
+                          xAxisLabelTextStyle={{ color: "gray", fontSize: 10 }}
+                          hideRules
+                          hideAxesAndRules
+                          curved
+                          adjustToWidth
+                          width={300}
+                          height={180}
+                          initialSpacing={20}
+                          spacing={60}
+                          isAnimated
+                        />
+                      </View>
+                    )}
+
+                    {/* List */}
+                    {weights.slice(0, 5).map((w, i) => (
+                      <View
+                        key={i}
+                        className={`flex-row justify-between py-3 ${
+                          i < Math.min(weights.length, 5) - 1
+                            ? "border-b border-surface-light"
+                            : ""
+                        }`}
+                      >
+                        <Text className="text-slate-400">{w.date}</Text>
+                        <Text className="text-white font-semibold">
+                          {w.weight} kg
+                        </Text>
+                      </View>
+                    ))}
+                  </>
+                )}
+              </Card>
+            </Animated.View>
+
+            {/* Logout Button */}
+            <Animated.View entering={FadeInDown.delay(350)} className="mt-6">
+              <TouchableOpacity
+                onPress={() => {
+                  if (Platform.OS === "web") {
+                    if (window.confirm("¿Estás seguro de que quieres salir?")) {
+                      signOut();
+                    }
+                  } else {
+                    Alert.alert(
+                      "Cerrar Sesión",
+                      "¿Estás seguro de que quieres salir?",
+                      [
+                        { text: "Cancelar", style: "cancel" },
+                        {
+                          text: "Salir",
+                          style: "destructive",
+                          onPress: signOut,
+                        },
+                      ],
+                    );
+                  }
+                }}
+                className="bg-red-500/20 py-4 rounded-2xl flex-row items-center justify-center overflow-hidden"
+              >
+                <Ionicons name="log-out-outline" size={20} color="#EF4444" />
+                <Text className="text-red-500 font-semibold ml-2">
+                  Cerrar Sesión
+                </Text>
+              </TouchableOpacity>
+            </Animated.View>
+          </ScrollView>
+
+          {/* Edit Modal */}
+          <Modal visible={showEditModal} transparent animationType="fade">
+            <View className="flex-1 bg-black/80 items-center justify-center px-6">
+              <View className="bg-surface w-full rounded-3xl p-6 overflow-hidden">
+                <Text className="text-white text-lg font-bold mb-4">
+                  Editar{" "}
+                  {editField === "full_name"
+                    ? "Nombre"
+                    : editField === "height"
+                      ? "Altura"
+                      : editField === "goal"
+                        ? "Objetivo"
+                        : "Actividad"}
+                </Text>
+
+                {editField === "goal" ? (
+                  <View className="gap-2 mb-4">
+                    {["muscle_gain", "weight_loss", "maintenance"].map(
+                      (goal) => (
+                        <TouchableOpacity
+                          key={goal}
+                          onPress={() => setEditValue(goal)}
+                          className={`py-4 px-4 rounded-xl border overflow-hidden ${
+                            editValue === goal
+                              ? "bg-primary-500/20 border-primary-500"
+                              : "bg-surface-light border-surface-light"
+                          }`}
+                        >
+                          <Text
+                            className={
+                              editValue === goal
+                                ? "text-white"
+                                : "text-slate-400"
+                            }
+                          >
+                            {getGoalLabel(goal)}
+                          </Text>
+                        </TouchableOpacity>
+                      ),
+                    )}
+                  </View>
+                ) : editField === "activity_level" ? (
+                  <View className="gap-2 mb-4">
+                    {[
+                      "sedentary",
+                      "light",
+                      "moderate",
+                      "active",
+                      "very_active",
+                    ].map((level) => (
+                      <TouchableOpacity
+                        key={level}
+                        onPress={() => setEditValue(level)}
+                        className={`py-3 px-4 rounded-xl border overflow-hidden ${
+                          editValue === level
+                            ? "bg-primary-500/20 border-primary-500"
+                            : "bg-surface-light border-surface-light"
+                        }`}
+                      >
+                        <Text
+                          className={
+                            editValue === level
+                              ? "text-white"
+                              : "text-slate-400"
+                          }
+                        >
+                          {getActivityLabel(level)}
+                        </Text>
+                      </TouchableOpacity>
+                    ))}
+                  </View>
+                ) : (
+                  <Input
+                    value={editValue}
+                    onChangeText={setEditValue}
+                    placeholder={
+                      editField === "height" ? "Ej: 170" : "Ingresa valor"
+                    }
+                    keyboardType={
+                      editField === "height" ? "numeric" : "default"
+                    }
+                  />
+                )}
+
+                <View className="flex-row gap-3 mt-4">
+                  <TouchableOpacity
+                    onPress={() => setShowEditModal(false)}
+                    className="flex-1 py-3 bg-surface-light rounded-xl items-center overflow-hidden"
+                  >
+                    <Text className="text-slate-400 font-medium">Cancelar</Text>
+                  </TouchableOpacity>
+                  <TouchableOpacity
+                    onPress={saveEdit}
+                    disabled={saving}
+                    className="flex-1 py-3 bg-primary-500 rounded-xl items-center overflow-hidden"
+                  >
+                    <Text className="text-white font-medium">
+                      {saving ? "Guardando..." : "Guardar"}
+                    </Text>
+                  </TouchableOpacity>
+                </View>
+              </View>
             </View>
-          </View>
-        </Modal>
+          </Modal>
+
+          {/* Add Weight Modal */}
+          <Modal visible={showAddWeight} transparent animationType="fade">
+            <View className="flex-1 bg-black/80 items-center justify-center px-6">
+              <View className="bg-surface w-full rounded-3xl p-6 overflow-hidden">
+                <Text className="text-white text-lg font-bold mb-4">
+                  Registrar Peso
+                </Text>
+                <Input
+                  value={newWeight}
+                  onChangeText={setNewWeight}
+                  placeholder="Ej: 75.5"
+                  keyboardType="numeric"
+                  icon="scale-outline"
+                />
+                <View className="flex-row gap-3 mt-4">
+                  <TouchableOpacity
+                    onPress={() => setShowAddWeight(false)}
+                    className="flex-1 py-3 bg-surface-light rounded-xl items-center overflow-hidden"
+                  >
+                    <Text className="text-slate-400 font-medium">Cancelar</Text>
+                  </TouchableOpacity>
+                  <TouchableOpacity
+                    onPress={addWeight}
+                    disabled={saving || !newWeight}
+                    className="flex-1 py-3 bg-accent-500 rounded-xl items-center overflow-hidden"
+                  >
+                    <Text className="text-white font-medium">
+                      {saving ? "Guardando..." : "Guardar"}
+                    </Text>
+                  </TouchableOpacity>
+                </View>
+              </View>
+            </View>
+          </Modal>
+        </View>
       </SafeAreaView>
     </LinearGradient>
   );

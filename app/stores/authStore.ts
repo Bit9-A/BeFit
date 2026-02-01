@@ -172,6 +172,8 @@ export const useAuthStore = create<AuthState>((set, get) => ({
       });
     } catch (error) {
       console.error("[Auth] Initialization error:", error);
+      // If session is invalid/expired, force sign out to clean state
+      await get().signOut();
       set({ isLoading: false });
     }
   },
